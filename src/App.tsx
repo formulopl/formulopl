@@ -4,10 +4,10 @@ import { ChatHistoryService, ChatSession } from './services/chatHistoryService';
 import { ChatHistorySidebar } from './components/ChatHistorySidebar';
 import { MessageContent } from './components/MessageContent';
 import { FormulaReference } from './components/FormulaReference';
-import DailyChallenge from './components/DailyChallenge';
 import { QuizMode } from './components/QuizMode';
 import ImageUpload from './components/ImageUpload';
 import WelcomeLanding from './components/WelcomeLanding';
+import { MathLogoIcon, AddIcon, CalendarIcon, HistoryIcon, CollapseIcon } from './components/DesignIcons';
 import { GamificationWidget } from './components/GamificationWidget';
 import StudyPlan from './components/StudyPlan';
 import MathKeyboard from './components/MathKeyboard';
@@ -33,6 +33,16 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
+
+// Przykładowe zapytania pokazywane pod polem wpisywania na stronie głównej.
+const EXAMPLE_PROMPTS = [
+  'Wytłumacz x² - 5x + 6 = 0',
+  'Pochodna sin(x)',
+  'log₂(8)',
+  'Średnia ważona z 12 i 18 z wagami 2 i 3',
+  'Całka ∫x² dx',
+  'Kombinacje C(10,3)',
+];
 
 // Google Analytics / Ads conversion tracking
 declare global {
@@ -106,6 +116,7 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [railCollapsed, setRailCollapsed] = useState(false);
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [orchestratorReady, setOrchestratorReady] = useState(false);
   const [, setMcpConnected] = useState(false);
@@ -723,7 +734,54 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className="app-shell">
+      <aside className={`app-rail ${railCollapsed ? 'collapsed' : ''}`} aria-label="Pasek narzędzi">
+        <button className="rail-logo" onClick={() => navigateTo('chat')} title="Formulo — strona główna" aria-label="Strona główna">
+          <MathLogoIcon size={26} />
+        </button>
+        <div className="rail-actions">
+          <button className="rail-btn" onClick={handleClearHistory} title="Nowy czat" aria-label="Nowy czat">
+            <AddIcon size={24} />
+          </button>
+          <button className="rail-btn" onClick={() => navigateTo('plan')} title="Plan nauki" aria-label="Plan nauki">
+            <CalendarIcon size={22} />
+          </button>
+          <button className="rail-btn" onClick={() => setShowHistory(true)} title="Historia czatów" aria-label="Historia czatów">
+            <HistoryIcon size={24} />
+          </button>
+          <button className="rail-btn rail-btn-export" onClick={handleExportToPNG} disabled={messages.length === 0} title="Eksportuj rozmowę do PNG" aria-label="Eksport do PNG">
+            <Icon type="camera" />
+          </button>
+        </div>
+        <div className="rail-footer">
+          <button className="rail-btn rail-theme" onClick={toggleTheme} title={theme === 'dark' ? 'Tryb jasny' : 'Tryb ciemny'} aria-label="Przełącz motyw">
+            {theme === 'dark' ? (
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+              </svg>
+            )}
+          </button>
+          <button className="rail-collapse" onClick={() => setRailCollapsed((c) => !c)} title="Zwiń pasek" aria-label="Zwiń pasek">
+            <CollapseIcon size={16} />
+          </button>
+        </div>
+      </aside>
+
+      {railCollapsed && (
+        <button className="rail-reopen" onClick={() => setRailCollapsed(false)} title="Rozwiń pasek" aria-label="Rozwiń pasek">
+          <CollapseIcon size={16} />
+        </button>
+      )}
+
+      <div className="app-container">
       {showWarmupBanner && (
         <div style={{
           background: 'linear-gradient(90deg, #fef3c7 0%, #fde68a 100%)',
@@ -920,18 +978,11 @@ function App() {
         </div>
       ) : (
       <div className="chat-container">
-        <div className="messages-container">
+        <div className={`messages-container${messages.length === 0 ? ' messages-container--landing' : ''}`}>
           {messages.length === 0 ? (
             <div className="empty-state">
               <ErrorBoundary sectionName="Strona główna">
-              <WelcomeLanding
-                onSubmitQuery={submitQuery}
-                dailyChallengeSlot={
-                  <ErrorBoundary sectionName="Zadanie dnia">
-                    <DailyChallenge onSolveInChat={(q: string) => submitQuery(q)} />
-                  </ErrorBoundary>
-                }
-              />
+              <WelcomeLanding />
               </ErrorBoundary>
             </div>
           ) : (
@@ -1156,6 +1207,23 @@ function App() {
             </svg>
           </button>
         </div>
+
+        {messages.length === 0 && (
+          <section className="examples-section examples-below-input">
+            <h4 className="section-title">Wybierz przykład, aby zobaczyć rozwiązanie krok po kroku</h4>
+            <div className="examples-grid">
+              {EXAMPLE_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  className="example-chip"
+                  onClick={() => submitQuery(prompt)}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
       )}
 
@@ -1179,7 +1247,11 @@ function App() {
           <a href="#" onClick={(e) => { e.preventDefault(); localStorage.removeItem('formulo-cookie-consent'); window.location.reload(); }}>Ustawienia cookies</a>
         </span>
       </footer>
+      </div>
 
+      {/* Renderowane jako bezpośrednie dziecko .app-shell (a nie .app-container),
+          aby nakładka historii znalazła się NAD lewym paskiem (app-rail), który
+          jako element flex z własnym z-index tworzy osobny kontekst stackingu. */}
       {showHistory && (
         <ChatHistorySidebar
           sessions={chatSessions}

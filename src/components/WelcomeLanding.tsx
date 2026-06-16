@@ -1,35 +1,8 @@
 import React from 'react';
 import './WelcomeLanding.css';
-
-interface WelcomeLandingProps {
-  onSubmitQuery: (query: string) => void;
-  dailyChallengeSlot: React.ReactNode;
-}
+import { AiIcon, CubeIcon, NoAccountsIcon, StepIcon } from './DesignIcons';
 
 /* SVG Icons */
-const StepsIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
-    <polyline points="12 12 20 7.5"></polyline>
-    <polyline points="12 12 12 21"></polyline>
-    <polyline points="12 12 4 7.5"></polyline>
-  </svg>
-);
-
-const CheckmarkIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20 6 9 17 4 12"></polyline>
-  </svg>
-);
-
-const ChartIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="12" y1="2" x2="12" y2="22"></line>
-    <path d="M17 5h-5v7h5V5z"></path>
-    <path d="M7 12h5v10H7z"></path>
-  </svg>
-);
-
 const TextInputIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="3" y="3" width="18" height="18" rx="2"></rect>
@@ -59,19 +32,7 @@ const ListIcon = () => (
   </svg>
 );
 
-const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
-  onSubmitQuery,
-  dailyChallengeSlot,
-}) => {
-  const examplePrompts = [
-    'Wytłumacz x² - 5x + 6 = 0',
-    'Pochodna sin(x)',
-    'log₂(8)',
-    'Średnia ważona z 12 i 18 z wagami 2 i 3',
-    'Całka ∫x² dx',
-    'Kombinacje C(10,3)',
-  ];
-
+const WelcomeLanding: React.FC = () => {
   const steps = [
     {
       num: '1',
@@ -109,30 +70,34 @@ const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
+          <div className="hero-badge">
+            <AiIcon size={16} />
+            <span>Powered by <strong>Bielik v3 11B</strong></span>
+          </div>
           <h1 className="hero-headline">
             Naucz się matematyki z korepetytorem AI
           </h1>
           <p className="hero-subheadline">
-            Wpisz lub wklej dowolne zadanie. Korepetytor AI po polsku wytłumaczy ci metodę krok po kroku i pokaże, jak myśleć matematycznie. Bez logowania, bez opłat.
+            Wpisz lub wklej dowolne zadanie. Korepetytor AI po polsku wytłumaczy ci metodę krok po kroku i pokaże, jak myśleć matematycznie. <strong>Bez logowania, bez opłat.</strong>
           </p>
 
           {/* Feature Pills */}
           <div className="feature-pills">
             <div className="feature-pill">
               <div className="pill-icon">
-                <StepsIcon />
+                <CubeIcon />
               </div>
               <span>Matura podstawowa i rozszerzona</span>
             </div>
             <div className="feature-pill">
               <div className="pill-icon">
-                <CheckmarkIcon />
+                <NoAccountsIcon />
               </div>
               <span>Bez logowania</span>
             </div>
             <div className="feature-pill">
               <div className="pill-icon">
-                <ChartIcon />
+                <StepIcon />
               </div>
               <span>Krok po kroku</span>
             </div>
@@ -143,7 +108,7 @@ const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
       {/* Learning Principle: jasna deklaracja edukacyjnego charakteru
           aplikacji, widoczna od razu po hero. Adresuje obawy o "ściąganie"
           i ułatwia ręczną weryfikację w Google Ads / Search. */}
-      <section className="learning-principle" aria-label="Cel aplikacji">
+      {/* <section className="learning-principle" aria-label="Cel aplikacji">
         <div className="principle-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -154,32 +119,17 @@ const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
           <strong>Formulo to korepetytor, nie generator gotowych odpowiedzi.</strong>{' '}
           Tłumaczymy metodę krok po kroku, żebyś zrozumiał materiał i samodzielnie rozwiązał kolejne zadanie. Aplikacja służy do nauki przed egzaminem, nie do zastępowania własnej pracy.
         </div>
-      </section>
+      </section> */}
 
-      {/* Example Prompts Section: pierwsza interakcja above the fold,
-          żeby użytkownik klikał od razu i nie odbijał się ze strony. */}
-      <section className="examples-section">
-        <h2 className="section-title">Kliknij przykład, żeby zobaczyć wyjaśnienie</h2>
-        <div className="examples-grid">
-          {examplePrompts.map((prompt) => (
-            <button
-              key={prompt}
-              className="example-chip"
-              onClick={() => onSubmitQuery(prompt)}
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
-      </section>
+      {/* Przykładowe zapytania przeniesione pod pole wpisywania (renderowane w App.tsx). */}
 
       {/* Daily Challenge Section */}
-      <section className="daily-challenge-section">
+      {/* <section className="daily-challenge-section">
         {dailyChallengeSlot}
-      </section>
+      </section> */}
 
       {/* How It Works Section */}
-      <section className="how-it-works-section">
+      {/* <section className="how-it-works-section">
         <h2 className="section-title">Jak to działa?</h2>
         <div className="steps-container">
           <div className="steps-grid">
@@ -201,10 +151,10 @@ const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Stats Section */}
-      <section className="stats-section">
+      {/* <section className="stats-section">
         <h3 className="stats-title">Obsługiwane tematy:</h3>
         <div className="stats-grid">
           <div className="stat-card">
@@ -220,10 +170,10 @@ const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
             <div className="stat-label">Arkuszy maturalnych (2015-2024)</div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Topics Section */}
-      <section className="topics-section">
+      {/* <section className="topics-section">
         <h2 className="section-title">Popularne tematy</h2>
         <div className="topics-grid">
           {topics.map((topic) => (
@@ -236,7 +186,7 @@ const WelcomeLanding: React.FC<WelcomeLandingProps> = ({
             </button>
           ))}
         </div>
-      </section>
+      </section> */}
 
     </div>
   );

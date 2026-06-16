@@ -44,7 +44,7 @@ export function ChatHistorySidebar({
     <div className="sidebar-overlay" onClick={onClose}>
       <div className="sidebar" onClick={(e) => e.stopPropagation()}>
         <div className="sidebar-header">
-          <h2><SidebarIcon type="books" /> Historia Konwersacji</h2>
+          <h2>Historia konwersacji</h2>
           <button onClick={onClose} className="close-button" title="Zamknij">
             ✕
           </button>
