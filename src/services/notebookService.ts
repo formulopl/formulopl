@@ -14,38 +14,89 @@ const STORAGE_KEY = 'formulo-notebook';
 
 export interface NotebookEntry {
   id: string;
-  title: string;          // auto-generowany skrót treści
-  content: string;        // pełna treść odpowiedzi AI
-  topic: string;          // wykryty temat (np. "Logarytmy", "Trygonometria")
-  note: string;           // własna notatka użytkownika (edytowalna)
-  tags: string[];         // tagi dodane przez użytkownika
-  savedAt: string;        // ISO timestamp
-  questionText?: string;  // opcjonalnie pytanie, które wywołało odpowiedź
+  title: string; // auto-generowany skrót treści
+  content: string; // pełna treść odpowiedzi AI
+  topic: string; // wykryty temat (np. "Logarytmy", "Trygonometria")
+  note: string; // własna notatka użytkownika (edytowalna)
+  tags: string[]; // tagi dodane przez użytkownika
+  savedAt: string; // ISO timestamp
+  questionText?: string; // opcjonalnie pytanie, które wywołało odpowiedź
 }
 
 // ── Wykrywanie tematu na podstawie treści ──────────────────────────────────
 
 const TOPIC_PATTERNS: Array<{ topic: string; patterns: RegExp[] }> = [
-  { topic: 'Logarytmy',           patterns: [/log/i, /logarytm/i] },
-  { topic: 'Trygonometria',       patterns: [/sin|cos|tan|tg\b|ctg|sinus|cosinus|tangens/i, /trygono/i] },
-  { topic: 'Pochodne',            patterns: [/pochodn/i, /różniczk/i, /ekstr/i, /monotoniczn/i, /f'\s*\(/i] },
-  { topic: 'Całki',               patterns: [/całk/i, /prymityw/i, /∫/] },
-  { topic: 'Stereometria',        patterns: [/ostrosłup|graniastosłup|walec|stożek|kula|sfer|bryły|prostopadłościan/i] },
-  { topic: 'Ciągi',               patterns: [/ciąg/i, /arytmetyczn/i, /geometryczn/i, /a_n/i] },
-  { topic: 'Prawdopodobieństwo',  patterns: [/prawdopodobie/i, /kombinacj/i, /permutacj/i, /dwumian/i] },
-  { topic: 'Funkcja kwadratowa',  patterns: [/kwadratow/i, /parabol/i, /wierzchołek/i, /delta/i, /dyskryminant/i] },
-  { topic: 'Równania',            patterns: [/równan/i, /nierównoś/i, /układ równań/i] },
-  { topic: 'Geometria płaska',    patterns: [/trójkąt/i, /prostokąt/i, /okrąg/i, /wielokąt/i, /pole/i, /obwód/i] },
-  { topic: 'Statystyka',          patterns: [/średnia/i, /mediana/i, /odchylenie/i, /wariancj/i] },
-  { topic: 'Potęgi i pierwiastki',patterns: [/potęg/i, /pierwiastek/i, /wykładnik/i] },
-  { topic: 'Wielomiany',          patterns: [/wielomian/i, /stopień/i, /pierwiastek wielom/i] },
-  { topic: 'Macierze i wektory',  patterns: [/macierz/i, /wektor/i, /wyznacznik/i] },
-  { topic: 'Liczby zespolone',    patterns: [/zespolon/i, /imaginar/i, /rzeczywist/i, /\bi\b/] },
+  { topic: 'Logarytmy', patterns: [/log/i, /logarytm/i] },
+  {
+    topic: 'Trygonometria',
+    patterns: [/sin|cos|tan|tg\b|ctg|sinus|cosinus|tangens/i, /trygono/i],
+  },
+  {
+    topic: 'Pochodne',
+    patterns: [/pochodn/i, /różniczk/i, /ekstr/i, /monotoniczn/i, /f'\s*\(/i],
+  },
+  { topic: 'Całki', patterns: [/całk/i, /prymityw/i, /∫/] },
+  {
+    topic: 'Stereometria',
+    patterns: [
+      /ostrosłup|graniastosłup|walec|stożek|kula|sfer|bryły|prostopadłościan/i,
+    ],
+  },
+  {
+    topic: 'Ciągi',
+    patterns: [/ciąg/i, /arytmetyczn/i, /geometryczn/i, /a_n/i],
+  },
+  {
+    topic: 'Prawdopodobieństwo',
+    patterns: [/prawdopodobie/i, /kombinacj/i, /permutacj/i, /dwumian/i],
+  },
+  {
+    topic: 'Funkcja kwadratowa',
+    patterns: [
+      /kwadratow/i,
+      /parabol/i,
+      /wierzchołek/i,
+      /delta/i,
+      /dyskryminant/i,
+    ],
+  },
+  { topic: 'Równania', patterns: [/równan/i, /nierównoś/i, /układ równań/i] },
+  {
+    topic: 'Geometria płaska',
+    patterns: [
+      /trójkąt/i,
+      /prostokąt/i,
+      /okrąg/i,
+      /wielokąt/i,
+      /pole/i,
+      /obwód/i,
+    ],
+  },
+  {
+    topic: 'Statystyka',
+    patterns: [/średnia/i, /mediana/i, /odchylenie/i, /wariancj/i],
+  },
+  {
+    topic: 'Potęgi i pierwiastki',
+    patterns: [/potęg/i, /pierwiastek/i, /wykładnik/i],
+  },
+  {
+    topic: 'Wielomiany',
+    patterns: [/wielomian/i, /stopień/i, /pierwiastek wielom/i],
+  },
+  {
+    topic: 'Macierze i wektory',
+    patterns: [/macierz/i, /wektor/i, /wyznacznik/i],
+  },
+  {
+    topic: 'Liczby zespolone',
+    patterns: [/zespolon/i, /imaginar/i, /rzeczywist/i, /\bi\b/],
+  },
 ];
 
 export function detectTopic(text: string): string {
   for (const { topic, patterns } of TOPIC_PATTERNS) {
-    if (patterns.some(p => p.test(text))) return topic;
+    if (patterns.some((p) => p.test(text))) return topic;
   }
   return 'Ogólne';
 }
@@ -87,18 +138,18 @@ export function getAllEntries(): NotebookEntry[] {
 }
 
 export function getEntry(id: string): NotebookEntry | undefined {
-  return loadAll().find(e => e.id === id);
+  return loadAll().find((e) => e.id === id);
 }
 
 export function isBookmarked(content: string): boolean {
   // Porównuj po pierwszych 200 znakach treści
   const prefix = content.slice(0, 200);
-  return loadAll().some(e => e.content.slice(0, 200) === prefix);
+  return loadAll().some((e) => e.content.slice(0, 200) === prefix);
 }
 
 export function addEntry(
   content: string,
-  options?: { questionText?: string; note?: string; tags?: string[] }
+  options?: { questionText?: string; note?: string; tags?: string[] },
 ): NotebookEntry {
   const all = loadAll();
   const entry: NotebookEntry = {
@@ -118,17 +169,20 @@ export function addEntry(
 }
 
 export function removeEntry(id: string): void {
-  const all = loadAll().filter(e => e.id !== id);
+  const all = loadAll().filter((e) => e.id !== id);
   saveAll(all);
 }
 
-export function updateEntry(id: string, patch: Partial<Pick<NotebookEntry, 'note' | 'tags' | 'title'>>): void {
-  const all = loadAll().map(e => e.id === id ? { ...e, ...patch } : e);
+export function updateEntry(
+  id: string,
+  patch: Partial<Pick<NotebookEntry, 'note' | 'tags' | 'title'>>,
+): void {
+  const all = loadAll().map((e) => (e.id === id ? { ...e, ...patch } : e));
   saveAll(all);
 }
 
 export function getTopics(): string[] {
-  const topics = new Set(loadAll().map(e => e.topic));
+  const topics = new Set(loadAll().map((e) => e.topic));
   return Array.from(topics).sort();
 }
 

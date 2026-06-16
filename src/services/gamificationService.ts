@@ -6,36 +6,36 @@
 const STORAGE_KEY = 'formulo-gamification';
 
 export interface GamificationState {
-  currentStreak: number;        // consecutive days with at least 1 solved task
+  currentStreak: number; // consecutive days with at least 1 solved task
   longestStreak: number;
-  lastActivityDate: string;     // ISO date string (YYYY-MM-DD)
+  lastActivityDate: string; // ISO date string (YYYY-MM-DD)
   totalSolved: number;
   totalQuizzes: number;
-  perfectQuizzes: number;       // quizzes with 100% score
-  topicStats: Record<string, number>;  // topic -> count of solved tasks
-  badges: string[];             // earned badge IDs
-  xp: number;                   // experience points
-  dailyLog: Record<string, number>;   // data (YYYY-MM-DD) -> liczba aktywności
-  xpLog: Record<string, number>;      // data (YYYY-MM-DD) -> XP zdobyte tego dnia
+  perfectQuizzes: number; // quizzes with 100% score
+  topicStats: Record<string, number>; // topic -> count of solved tasks
+  badges: string[]; // earned badge IDs
+  xp: number; // experience points
+  dailyLog: Record<string, number>; // data (YYYY-MM-DD) -> liczba aktywności
+  xpLog: Record<string, number>; // data (YYYY-MM-DD) -> XP zdobyte tego dnia
 }
 
 export interface Badge {
   id: string;
   name: string;
   description: string;
-  icon: string;         // SVG path or icon identifier
+  icon: string; // SVG path or icon identifier
   condition: (state: GamificationState) => boolean;
 }
 
 // Level names in Polish
 const LEVEL_NAMES = [
-  'Początkujący',    // 0-99 XP
-  'Uczeń',           // 100-199 XP
-  'Adept',           // 200-299 XP
-  'Matematyk',       // 300-399 XP
-  'Mistrz',          // 400-499 XP
-  'Ekspert',         // 500-599 XP
-  'Geniusz',         // 600+ XP
+  'Początkujący', // 0-99 XP
+  'Uczeń', // 100-199 XP
+  'Adept', // 200-299 XP
+  'Matematyk', // 300-399 XP
+  'Mistrz', // 400-499 XP
+  'Ekspert', // 500-599 XP
+  'Geniusz', // 600+ XP
 ];
 
 /**
@@ -248,8 +248,14 @@ export function recordSolve(topic?: string): GamificationState {
 
   // Zapisz w dziennym logu aktywności
   const today = getTodayISO();
-  state.dailyLog = { ...state.dailyLog, [today]: (state.dailyLog[today] || 0) + 1 };
-  state.xpLog = { ...state.xpLog, [today]: (state.xpLog[today] || 0) + xpGained };
+  state.dailyLog = {
+    ...state.dailyLog,
+    [today]: (state.dailyLog[today] || 0) + 1,
+  };
+  state.xpLog = {
+    ...state.xpLog,
+    [today]: (state.xpLog[today] || 0) + xpGained,
+  };
 
   // Update topic stats
   if (topic) {
@@ -286,8 +292,14 @@ export function recordQuiz(score: number, total: number): GamificationState {
 
   // Zapisz w dziennym logu aktywności (quiz = 1 aktywność)
   const today = getTodayISO();
-  state.dailyLog = { ...state.dailyLog, [today]: (state.dailyLog[today] || 0) + 1 };
-  state.xpLog = { ...state.xpLog, [today]: (state.xpLog[today] || 0) + xpGained };
+  state.dailyLog = {
+    ...state.dailyLog,
+    [today]: (state.dailyLog[today] || 0) + 1,
+  };
+  state.xpLog = {
+    ...state.xpLog,
+    [today]: (state.xpLog[today] || 0) + xpGained,
+  };
 
   saveGamificationState(state);
   return state;
@@ -367,7 +379,10 @@ export function getEarnedBadges(state: GamificationState): Badge[] {
 /**
  * Get recent badges (last N earned)
  */
-export function getRecentBadges(state: GamificationState, count: number = 3): Badge[] {
+export function getRecentBadges(
+  state: GamificationState,
+  count: number = 3,
+): Badge[] {
   const earned = getEarnedBadges(state);
   return earned.slice(-count);
 }
@@ -377,13 +392,16 @@ export function getRecentBadges(state: GamificationState, count: number = 3): Ba
  * Zwrócona tablica ma wpisy dla każdego dnia (od najstarszego do dziś).
  */
 export interface HeatmapDay {
-  date: string;      // YYYY-MM-DD
-  count: number;     // liczba aktywności
-  xp: number;        // XP zdobyte tego dnia
-  weekday: number;   // 0=niedzieła, 1=poniedziałek … 6=sobota
+  date: string; // YYYY-MM-DD
+  count: number; // liczba aktywności
+  xp: number; // XP zdobyte tego dnia
+  weekday: number; // 0=niedzieła, 1=poniedziałek … 6=sobota
 }
 
-export function getHeatmapData(state: GamificationState, days: number = 84): HeatmapDay[] {
+export function getHeatmapData(
+  state: GamificationState,
+  days: number = 84,
+): HeatmapDay[] {
   const result: HeatmapDay[] = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -406,7 +424,20 @@ export function getHeatmapData(state: GamificationState, days: number = 84): Hea
  * Zwraca nazwę miesiąca po polsku dla skróconej wersji
  */
 export function getShortMonthPL(dateStr: string): string {
-  const months = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+  const months = [
+    'sty',
+    'lut',
+    'mar',
+    'kwi',
+    'maj',
+    'cze',
+    'lip',
+    'sie',
+    'wrz',
+    'paź',
+    'lis',
+    'gru',
+  ];
   const m = parseInt(dateStr.split('-')[1], 10) - 1;
   return months[m] ?? '';
 }

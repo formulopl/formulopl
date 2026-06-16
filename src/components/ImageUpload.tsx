@@ -6,14 +6,19 @@ interface ImageUploadProps {
   disabled?: boolean;
 }
 
-export const ImageUpload: React.FC<ImageUploadProps> = ({ onTextExtracted, disabled = false }) => {
+export const ImageUpload: React.FC<ImageUploadProps> = ({
+  onTextExtracted,
+  disabled = false,
+}) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -84,7 +89,10 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onTextExtracted, disab
       onTextExtracted(data.text);
       resetPreview();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Błąd podczas przetwarzania obrazu';
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Błąd podczas przetwarzania obrazu';
       showError(message);
     } finally {
       setLoading(false);
@@ -110,35 +118,35 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onTextExtracted, disab
   // If preview is active, show preview UI
   if (preview) {
     return (
-      <div className="image-upload-preview">
-        <div className="image-upload-thumbnail">
-          <img src={preview} alt="Preview" />
+      <div className='image-upload-preview'>
+        <div className='image-upload-thumbnail'>
+          <img src={preview} alt='Preview' />
         </div>
 
-        <div className="image-upload-actions">
+        <div className='image-upload-actions'>
           <button
-            className="image-upload-recognize-btn"
+            className='image-upload-recognize-btn'
             onClick={handleRecognizeText}
             disabled={loading}
           >
             {loading ? (
-              <div className="image-upload-spinner"></div>
+              <div className='image-upload-spinner'></div>
             ) : (
               'Rozpoznaj tekst'
             )}
           </button>
 
           <button
-            className="image-upload-cancel-btn"
+            className='image-upload-cancel-btn'
             onClick={handleCancel}
             disabled={loading}
-            aria-label="Cancel"
+            aria-label='Cancel'
           >
             ✕
           </button>
         </div>
 
-        {error && <div className="image-upload-error">{error}</div>}
+        {error && <div className='image-upload-error'>{error}</div>}
       </div>
     );
   }
@@ -147,35 +155,35 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onTextExtracted, disab
   return (
     <>
       <button
-        className="image-upload-btn"
+        className='image-upload-btn'
         onClick={() => fileInputRef.current?.click()}
         disabled={disabled}
-        title="Prześlij zdjęcie zadania"
-        aria-label="Upload image"
+        title='Prześlij zdjęcie zadania'
+        aria-label='Upload image'
       >
         {/* Camera icon SVG */}
         <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          width='20'
+          height='20'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+          strokeLinejoin='round'
         >
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-          <circle cx="12" cy="13" r="4"></circle>
+          <path d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'></path>
+          <circle cx='12' cy='13' r='4'></circle>
         </svg>
       </button>
 
       <input
         ref={fileInputRef}
-        type="file"
-        accept="image/*"
+        type='file'
+        accept='image/*'
         onChange={handleFileSelect}
         style={{ display: 'none' }}
-        aria-hidden="true"
+        aria-hidden='true'
       />
     </>
   );

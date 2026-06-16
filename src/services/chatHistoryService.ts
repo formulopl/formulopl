@@ -33,8 +33,9 @@ export class ChatHistoryService {
       if (!data) return [];
       const sessions = JSON.parse(data) as ChatSession[];
       // Sort by updatedAt descending (most recent first)
-      return sessions.sort((a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      return sessions.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       );
     } catch (error) {
       logError('[ChatHistory] Failed to load sessions:', error);
@@ -47,7 +48,7 @@ export class ChatHistoryService {
    */
   static getSession(chatId: string): ChatSession | null {
     const sessions = this.getAllSessions();
-    return sessions.find(s => s.id === chatId) || null;
+    return sessions.find((s) => s.id === chatId) || null;
   }
 
   /**
@@ -56,7 +57,7 @@ export class ChatHistoryService {
   static saveSession(session: ChatSession): void {
     try {
       const sessions = this.getAllSessions();
-      const existingIndex = sessions.findIndex(s => s.id === session.id);
+      const existingIndex = sessions.findIndex((s) => s.id === session.id);
 
       if (existingIndex >= 0) {
         // Update existing session
@@ -86,7 +87,7 @@ export class ChatHistoryService {
   static deleteSession(chatId: string): void {
     try {
       const sessions = this.getAllSessions();
-      const filtered = sessions.filter(s => s.id !== chatId);
+      const filtered = sessions.filter((s) => s.id !== chatId);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
       logDebug(`[ChatHistory] Deleted session ${chatId}`);
     } catch (error) {
@@ -125,14 +126,18 @@ export class ChatHistoryService {
   static getSessionTitle(session: ChatSession): string {
     if (session.title) return session.title;
 
-    const firstUserMessage = session.messages.find(m => m.role === 'user');
+    const firstUserMessage = session.messages.find((m) => m.role === 'user');
     if (firstUserMessage) {
       // Extract text content
       let contentStr: string;
       if (Array.isArray(firstUserMessage.content)) {
         contentStr = firstUserMessage.content
-          .map(block => {
-            if (typeof block === 'object' && block !== null && block.type === 'text') {
+          .map((block) => {
+            if (
+              typeof block === 'object' &&
+              block !== null &&
+              block.type === 'text'
+            ) {
               return block.text || '';
             }
             return '';
@@ -180,7 +185,11 @@ export class ChatHistoryService {
       const session = JSON.parse(text) as ChatSession;
 
       // Validate session structure
-      if (!session.id || !session.provider || !Array.isArray(session.messages)) {
+      if (
+        !session.id ||
+        !session.provider ||
+        !Array.isArray(session.messages)
+      ) {
         throw new Error('Invalid session format');
       }
 

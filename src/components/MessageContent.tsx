@@ -48,7 +48,7 @@ export function MessageContent({ content }: MessageContentProps) {
 
       // Otherwise, check if it's tool_result format (should be hidden)
       const hasToolResults = content.some(
-        (block: any) => block.type === 'tool_result'
+        (block: any) => block.type === 'tool_result',
       );
       if (hasToolResults) {
         return null; // Tool results are displayed separately
@@ -73,7 +73,11 @@ export function MessageContent({ content }: MessageContentProps) {
     function processContent(textContent: string): JSX.Element[] | JSX.Element {
       // Extract code blocks first (before LaTeX processing)
       const codeBlockRegex = /```(\w+)?\n([\s\S]*?)\n```/g;
-      const codeBlocks: Array<{ index: number; language: string; code: string }> = [];
+      const codeBlocks: Array<{
+        index: number;
+        language: string;
+        code: string;
+      }> = [];
       let match;
       let codeBlockIndex = 0;
 
@@ -88,7 +92,8 @@ export function MessageContent({ content }: MessageContentProps) {
       // Replace code blocks with placeholders
       let normalized = textContent.replace(
         codeBlockRegex,
-        (_match, _lang, code) => `__CODE_BLOCK_${codeBlocks.findIndex(cb => cb.code === code)}__`
+        (_match, _lang, code) =>
+          `__CODE_BLOCK_${codeBlocks.findIndex((cb) => cb.code === code)}__`,
       );
 
       // Bielik 11B v3 czesto wypluwa formule dwa razy obok siebie
@@ -101,7 +106,10 @@ export function MessageContent({ content }: MessageContentProps) {
 
       // Convert display math: \[...\] to $$...$$
       // Uzywamy funkcji-replacementa zeby unikac patologi parsowania $$ w replace string.
-      normalized = normalized.replace(/\\\[([\s\S]*?)\\\]/g, (_m, c) => `$$${c}$$`);
+      normalized = normalized.replace(
+        /\\\[([\s\S]*?)\\\]/g,
+        (_m, c) => `$$${c}$$`,
+      );
 
       // Convert inline math: \(...\) to $...$
       normalized = normalized.replace(/\\\((.*?)\\\)/g, (_m, c) => `$${c}$`);
@@ -117,7 +125,11 @@ export function MessageContent({ content }: MessageContentProps) {
         let i = 0;
         while (i < normalized.length) {
           // Look for \boxed{ that is NOT preceded by $
-          if (i >= 6 && normalized.substring(i - 6, i) === '\\boxed' && normalized[i] === '{') {
+          if (
+            i >= 6 &&
+            normalized.substring(i - 6, i) === '\\boxed' &&
+            normalized[i] === '{'
+          ) {
             // Check if preceded by $
             const precedingChar = i >= 7 ? normalized[i - 7] : '';
             if (precedingChar !== '$') {
@@ -161,7 +173,9 @@ export function MessageContent({ content }: MessageContentProps) {
       let i = 0;
       while (i < normalized.length) {
         // Check for code block placeholder
-        const codeBlockMatch = normalized.substring(i).match(/^__CODE_BLOCK_(\d+)__/);
+        const codeBlockMatch = normalized
+          .substring(i)
+          .match(/^__CODE_BLOCK_(\d+)__/);
         if (codeBlockMatch) {
           const blockIndex = parseInt(codeBlockMatch[1], 10);
           const codeBlock = codeBlocks[blockIndex];
@@ -177,7 +191,11 @@ export function MessageContent({ content }: MessageContentProps) {
         }
 
         // Check for display math $$...$$
-        if (i < normalized.length - 1 && normalized[i] === '$' && normalized[i + 1] === '$') {
+        if (
+          i < normalized.length - 1 &&
+          normalized[i] === '$' &&
+          normalized[i + 1] === '$'
+        ) {
           // Find closing $$
           let end = i + 2;
           let found = false;
@@ -256,7 +274,9 @@ export function MessageContent({ content }: MessageContentProps) {
       const highlightLean = (code: string): JSX.Element => {
         const lines = code.split('\n');
 
-        const tokenizeLine = (line: string): Array<{ type: string; value: string }> => {
+        const tokenizeLine = (
+          line: string,
+        ): Array<{ type: string; value: string }> => {
           const tokens: Array<{ type: string; value: string }> = [];
           let i = 0;
 
@@ -265,7 +285,10 @@ export function MessageContent({ content }: MessageContentProps) {
             if (/\s/.test(line[i])) {
               const start = i;
               while (i < line.length && /\s/.test(line[i])) i++;
-              tokens.push({ type: 'whitespace', value: line.substring(start, i) });
+              tokens.push({
+                type: 'whitespace',
+                value: line.substring(start, i),
+              });
               continue;
             }
 
@@ -302,17 +325,63 @@ export function MessageContent({ content }: MessageContentProps) {
               while (i < line.length && /[a-zA-Z0-9_'ℕℤℝ]/.test(line[i])) i++;
               const word = line.substring(start, i);
 
-              const keywords = ['import', 'theorem', 'lemma', 'def', 'inductive', 'structure',
-                               'by', 'with', 'have', 'show', 'let', 'in', 'match', 'if', 'then', 'else',
-                               'sorry', 'rw', 'simp', 'ring', 'exact', 'apply', 'intro', 'intros',
-                               'induction', 'cases', 'split', 'left', 'right', 'constructor',
-                               'open', 'namespace', 'section', 'variable', 'variables', 'axiom'];
+              const keywords = [
+                'import',
+                'theorem',
+                'lemma',
+                'def',
+                'inductive',
+                'structure',
+                'by',
+                'with',
+                'have',
+                'show',
+                'let',
+                'in',
+                'match',
+                'if',
+                'then',
+                'else',
+                'sorry',
+                'rw',
+                'simp',
+                'ring',
+                'exact',
+                'apply',
+                'intro',
+                'intros',
+                'induction',
+                'cases',
+                'split',
+                'left',
+                'right',
+                'constructor',
+                'open',
+                'namespace',
+                'section',
+                'variable',
+                'variables',
+                'axiom',
+              ];
 
-              const types = ['Nat', 'Int', 'Real', 'Bool', 'Prop', 'Type', 'Sort'];
+              const types = [
+                'Nat',
+                'Int',
+                'Real',
+                'Bool',
+                'Prop',
+                'Type',
+                'Sort',
+              ];
 
               if (keywords.includes(word)) {
                 tokens.push({ type: 'keyword', value: word });
-              } else if (types.includes(word) || word === 'ℕ' || word === 'ℤ' || word === 'ℝ') {
+              } else if (
+                types.includes(word) ||
+                word === 'ℕ' ||
+                word === 'ℤ' ||
+                word === 'ℝ'
+              ) {
                 tokens.push({ type: 'type', value: word });
               } else {
                 tokens.push({ type: 'identifier', value: word });
@@ -331,7 +400,10 @@ export function MessageContent({ content }: MessageContentProps) {
         return (
           <>
             {lines.map((line, lineIdx) => (
-              <div key={lineIdx} style={{ fontFamily: 'monospace', minHeight: '1.5em' }}>
+              <div
+                key={lineIdx}
+                style={{ fontFamily: 'monospace', minHeight: '1.5em' }}
+              >
                 {tokenizeLine(line).map((token, tokenIdx) => {
                   const style: React.CSSProperties = {};
 
@@ -370,7 +442,9 @@ export function MessageContent({ content }: MessageContentProps) {
       const highlightPython = (code: string): JSX.Element => {
         const lines = code.split('\n');
 
-        const tokenizeLine = (line: string): Array<{ type: string; value: string }> => {
+        const tokenizeLine = (
+          line: string,
+        ): Array<{ type: string; value: string }> => {
           const tokens: Array<{ type: string; value: string }> = [];
           let i = 0;
 
@@ -379,7 +453,10 @@ export function MessageContent({ content }: MessageContentProps) {
             if (/\s/.test(line[i])) {
               const start = i;
               while (i < line.length && /\s/.test(line[i])) i++;
-              tokens.push({ type: 'whitespace', value: line.substring(start, i) });
+              tokens.push({
+                type: 'whitespace',
+                value: line.substring(start, i),
+              });
               continue;
             }
 
@@ -417,9 +494,34 @@ export function MessageContent({ content }: MessageContentProps) {
               while (i < line.length && /[a-zA-Z0-9_]/.test(line[i])) i++;
               const word = line.substring(start, i);
 
-              const keywords = ['from', 'import', 'def', 'class', 'if', 'else', 'elif', 'for', 'while',
-                               'return', 'try', 'except', 'with', 'as', 'in', 'and', 'or', 'not',
-                               'True', 'False', 'None', 'print', 'lambda', 'pass', 'break', 'continue'];
+              const keywords = [
+                'from',
+                'import',
+                'def',
+                'class',
+                'if',
+                'else',
+                'elif',
+                'for',
+                'while',
+                'return',
+                'try',
+                'except',
+                'with',
+                'as',
+                'in',
+                'and',
+                'or',
+                'not',
+                'True',
+                'False',
+                'None',
+                'print',
+                'lambda',
+                'pass',
+                'break',
+                'continue',
+              ];
 
               // Check if next non-whitespace is '('
               let j = i;
@@ -447,7 +549,10 @@ export function MessageContent({ content }: MessageContentProps) {
         return (
           <>
             {lines.map((line, lineIdx) => (
-              <div key={lineIdx} style={{ fontFamily: 'monospace', minHeight: '1.5em' }}>
+              <div
+                key={lineIdx}
+                style={{ fontFamily: 'monospace', minHeight: '1.5em' }}
+              >
                 {tokenizeLine(line).map((token, tokenIdx) => {
                   const style: React.CSSProperties = {};
 
@@ -486,7 +591,8 @@ export function MessageContent({ content }: MessageContentProps) {
       for (const segment of segments) {
         if (segment.type === 'code-block') {
           // Render code block with syntax highlighting
-          const isPython = segment.language === 'python' || segment.language === 'py';
+          const isPython =
+            segment.language === 'python' || segment.language === 'py';
           const isLean = segment.language === 'lean';
           const codeBlockKey = key++;
           parts.push(
@@ -530,7 +636,8 @@ export function MessageContent({ content }: MessageContentProps) {
                 <button
                   onClick={() => copyToClipboard(segment.content, codeBlockKey)}
                   style={{
-                    backgroundColor: copiedIndex === codeBlockKey ? '#4CAF50' : '#333',
+                    backgroundColor:
+                      copiedIndex === codeBlockKey ? '#4CAF50' : '#333',
                     color: '#fff',
                     border: 'none',
                     padding: '4px 8px',
@@ -540,7 +647,7 @@ export function MessageContent({ content }: MessageContentProps) {
                     fontWeight: 'bold',
                     transition: 'background-color 0.2s',
                   }}
-                  title="Kopiuj kod"
+                  title='Kopiuj kod'
                 >
                   {copiedIndex === codeBlockKey ? '✓ Skopiowano' : '📋 Kopiuj'}
                 </button>
@@ -554,7 +661,7 @@ export function MessageContent({ content }: MessageContentProps) {
                   {segment.content}
                 </pre>
               )}
-            </div>
+            </div>,
           );
         } else if (segment.type === 'text') {
           // Render inline markdown (bold, italic) and preserve newlines
@@ -563,13 +670,16 @@ export function MessageContent({ content }: MessageContentProps) {
             // Match **bold** and *italic* but NOT multiplication like 4*1*4
             // Negative lookbehind: * must not be preceded by a digit/letter
             // Negative lookahead: closing * must not be followed by a digit/letter
-            const inlineRegex = /(?<![a-zA-Z0-9])(\*\*(.+?)\*\*|\*(.+?)\*)(?![a-zA-Z0-9])/g;
+            const inlineRegex =
+              /(?<![a-zA-Z0-9])(\*\*(.+?)\*\*|\*(.+?)\*)(?![a-zA-Z0-9])/g;
             let lastIndex = 0;
             let match;
             while ((match = inlineRegex.exec(text)) !== null) {
               // Text before match
               if (match.index > lastIndex) {
-                nodes.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+                nodes.push(
+                  <span key={key++}>{text.slice(lastIndex, match.index)}</span>,
+                );
               }
               if (match[2]) {
                 // **bold**
@@ -592,13 +702,16 @@ export function MessageContent({ content }: MessageContentProps) {
 
           segment.content.split('\n').forEach((line, idx, arr) => {
             if (line) {
-              renderInlineMarkdown(line).forEach(node => parts.push(node));
+              renderInlineMarkdown(line).forEach((node) => parts.push(node));
             }
             if (idx < arr.length - 1) {
               parts.push(<br key={key++} />);
             }
           });
-        } else if (segment.type === 'inline-math' || segment.type === 'display-math') {
+        } else if (
+          segment.type === 'inline-math' ||
+          segment.type === 'display-math'
+        ) {
           // Normalize double-escaped backslashes from copy-pasted LaTeX
           // e.g. \\frac{1}{3} → \frac{1}{3}, \\mathcal{O} → \mathcal{O}
           let mathContent = segment.content;
@@ -622,7 +735,7 @@ export function MessageContent({ content }: MessageContentProps) {
                   dangerouslySetInnerHTML={{ __html: html }}
                   data-math-tex={`$$${mathContent}$$`}
                   style={{ margin: '1em 0', textAlign: 'center' }}
-                />
+                />,
               );
             } else {
               parts.push(
@@ -631,15 +744,25 @@ export function MessageContent({ content }: MessageContentProps) {
                   dangerouslySetInnerHTML={{ __html: html }}
                   data-math-tex={`$${mathContent}$`}
                   style={{ display: 'inline-block', margin: '0 2px' }}
-                />
+                />,
               );
             }
           } catch (error) {
             // KaTeX failed — show source LaTeX as plain text so it's at least readable
             if (isDisplay) {
-              parts.push(<div key={key++} style={{ fontFamily: 'monospace', opacity: 0.8 }}>{`$$${mathContent}$$`}</div>);
+              parts.push(
+                <div
+                  key={key++}
+                  style={{ fontFamily: 'monospace', opacity: 0.8 }}
+                >{`$$${mathContent}$$`}</div>,
+              );
             } else {
-              parts.push(<span key={key++} style={{ fontFamily: 'monospace', opacity: 0.8 }}>{`$${mathContent}$`}</span>);
+              parts.push(
+                <span
+                  key={key++}
+                  style={{ fontFamily: 'monospace', opacity: 0.8 }}
+                >{`$${mathContent}$`}</span>,
+              );
             }
           }
         }
@@ -662,7 +785,7 @@ export function MessageContent({ content }: MessageContentProps) {
     container.appendChild(range.cloneContents());
 
     // Replace each KaTeX-rendered element with its LaTeX source
-    container.querySelectorAll<HTMLElement>('[data-math-tex]').forEach(el => {
+    container.querySelectorAll<HTMLElement>('[data-math-tex]').forEach((el) => {
       const tex = el.getAttribute('data-math-tex') ?? '';
       el.replaceWith(document.createTextNode(tex));
     });
@@ -676,5 +799,9 @@ export function MessageContent({ content }: MessageContentProps) {
     return null;
   }
 
-  return <div onCopy={handleCopy} style={{ display: 'contents' }}>{renderedContent}</div>;
+  return (
+    <div onCopy={handleCopy} style={{ display: 'contents' }}>
+      {renderedContent}
+    </div>
+  );
 }

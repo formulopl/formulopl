@@ -13,7 +13,8 @@ function hasGoogleCMP(): boolean {
 
 function hasExistingConsent(): boolean {
   // Google Funding Choices stores consent in FCCDCF cookie
-  if (document.cookie.split(';').some(c => c.trim().startsWith('FCCDCF='))) return true;
+  if (document.cookie.split(';').some((c) => c.trim().startsWith('FCCDCF=')))
+    return true;
   // Our own fallback consent
   if (localStorage.getItem('formulo-cookie-consent')) return true;
   return false;
@@ -54,27 +55,37 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: 'var(--glass-bg, #1a1a2e)',
-      borderTop: '1px solid var(--glass-border, #333)',
-      padding: '16px 24px',
-      zIndex: 9999,
-      display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '12px',
-      fontSize: '13px',
-      color: 'var(--text-secondary, #ccc)',
-      backdropFilter: 'blur(12px)',
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'var(--glass-bg, #1a1a2e)',
+        borderTop: '1px solid var(--glass-border, #333)',
+        padding: '16px 24px',
+        zIndex: 9999,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+        fontSize: '13px',
+        color: 'var(--text-secondary, #ccc)',
+        backdropFilter: 'blur(12px)',
+      }}
+    >
       <span>
         Używamy cookies do analityki i reklam.{' '}
-        <a href="/cookies" style={{ color: 'var(--primary, #667eea)', textDecoration: 'underline' }}>Więcej informacji</a>
+        <a
+          href='/cookies'
+          style={{
+            color: 'var(--primary, #667eea)',
+            textDecoration: 'underline',
+          }}
+        >
+          Więcej informacji
+        </a>
       </span>
       <div style={{ display: 'flex', gap: '8px' }}>
         <button

@@ -14,8 +14,12 @@
 }
 
 @keyframes overlayIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .sidebar {
@@ -32,8 +36,12 @@
 }
 
 @keyframes sidebarIn {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .sidebar-header {
@@ -42,7 +50,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.2) 0%,
+    rgba(118, 75, 162, 0.2) 100%
+  );
 }
 
 .sidebar-header h2 {
@@ -66,7 +78,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .close-button:hover {
@@ -84,7 +98,9 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.2s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s;
   font-family: inherit;
   letter-spacing: 0.2px;
 }
@@ -125,7 +141,10 @@
   margin-bottom: 8px;
   padding: 12px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.15s,
+    border-color 0.2s;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -186,7 +205,9 @@
   font-size: 15px;
   cursor: pointer;
   opacity: 0.4;
-  transition: opacity 0.2s, transform 0.15s;
+  transition:
+    opacity 0.2s,
+    transform 0.15s;
   padding: 4px;
   color: var(--clear-btn-color);
 }

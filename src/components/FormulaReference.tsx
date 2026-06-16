@@ -47,10 +47,26 @@ function renderMathText(text: string): string {
   // Already has explicit LaTeX delimiters? Render them.
   // Pattern: $...$ for inline, $$...$$ for display
   let result = text.replace(/\$\$(.+?)\$\$/g, (_m, tex) => {
-    try { return katex.renderToString(tex, { displayMode: true, throwOnError: false, strict: false }); } catch { return tex; }
+    try {
+      return katex.renderToString(tex, {
+        displayMode: true,
+        throwOnError: false,
+        strict: false,
+      });
+    } catch {
+      return tex;
+    }
   });
   result = result.replace(/\$(.+?)\$/g, (_m, tex) => {
-    try { return katex.renderToString(tex, { displayMode: false, throwOnError: false, strict: false }); } catch { return tex; }
+    try {
+      return katex.renderToString(tex, {
+        displayMode: false,
+        throwOnError: false,
+        strict: false,
+      });
+    } catch {
+      return tex;
+    }
   });
 
   // Auto-detect common math patterns and render inline
@@ -67,11 +83,15 @@ function renderMathText(text: string): string {
       // sin, cos, etc.
       tex = tex.replace(/^(sin|cos|tan|ln|exp|lim)\(/, '\\$1(');
       try {
-        return katex.renderToString(tex, { displayMode: false, throwOnError: false, strict: false });
+        return katex.renderToString(tex, {
+          displayMode: false,
+          throwOnError: false,
+          strict: false,
+        });
       } catch {
         return match;
       }
-    }
+    },
   );
 
   return result;
@@ -86,7 +106,10 @@ const LEVEL_ICONS: Record<string, string> = {
   studia: '🔬',
 };
 
-export function FormulaReference({ onSubmitQuery, onNavigateToChat }: FormulaReferenceProps) {
+export function FormulaReference({
+  onSubmitQuery,
+  onNavigateToChat,
+}: FormulaReferenceProps) {
   const [levels, setLevels] = useState<Level[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -97,12 +120,12 @@ export function FormulaReference({ onSubmitQuery, onNavigateToChat }: FormulaRef
 
   useEffect(() => {
     fetch('/api/formulas')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setLevels(data.levels || []);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError('Nie udało się załadować formuł');
         setLoading(false);
         console.error(err);
@@ -110,43 +133,58 @@ export function FormulaReference({ onSubmitQuery, onNavigateToChat }: FormulaRef
   }, []);
 
   // Filter by search across all levels, or show active level
-  const currentLevel = levels.find(l => l.level === activeLevel);
+  const currentLevel = levels.find((l) => l.level === activeLevel);
   const categoriesToShow = searchQuery.trim()
     ? levels
-        .flatMap(l => l.categories)
-        .map(cat => ({
+        .flatMap((l) => l.categories)
+        .map((cat) => ({
           ...cat,
-          methods: cat.methods.filter(m =>
-            m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            m.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (m.latex || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-            m.sympy_functions.some(f => f.toLowerCase().includes(searchQuery.toLowerCase()))
+          methods: cat.methods.filter(
+            (m) =>
+              m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              m.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              (m.latex || '')
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              m.sympy_functions.some((f) =>
+                f.toLowerCase().includes(searchQuery.toLowerCase()),
+              ),
           ),
         }))
-        .filter(cat => cat.methods.length > 0)
+        .filter((cat) => cat.methods.length > 0)
     : currentLevel?.categories || [];
 
-  const totalMethods = levels.reduce((sum, l) => sum + l.categories.reduce((s, c) => s + c.methods.length, 0), 0);
+  const totalMethods = levels.reduce(
+    (sum, l) => sum + l.categories.reduce((s, c) => s + c.methods.length, 0),
+    0,
+  );
 
   return (
-    <div className="formula-reference-inline">
-      <div className="formula-header">
+    <div className='formula-reference-inline'>
+      <div className='formula-header'>
         <h2>Baza wzorów i metod</h2>
-        <span className="formula-count">{totalMethods} pozycji</span>
+        <span className='formula-count'>{totalMethods} pozycji</span>
       </div>
 
       {/* Level tabs */}
       {!loading && levels.length > 0 && (
-        <div className="formula-level-tabs">
-          {levels.map(l => (
+        <div className='formula-level-tabs'>
+          {levels.map((l) => (
             <button
               key={l.level}
               className={`formula-level-tab ${activeLevel === l.level ? 'active' : ''}`}
-              onClick={() => { setActiveLevel(l.level); setSearchQuery(''); setExpandedCategory(null); setExpandedMethod(null); }}
+              onClick={() => {
+                setActiveLevel(l.level);
+                setSearchQuery('');
+                setExpandedCategory(null);
+                setExpandedMethod(null);
+              }}
             >
-              <span className="formula-level-icon">{LEVEL_ICONS[l.level] || ''}</span>
+              <span className='formula-level-icon'>
+                {LEVEL_ICONS[l.level] || ''}
+              </span>
               {l.label}
-              <span className="formula-level-count">
+              <span className='formula-level-count'>
                 {l.categories.reduce((s, c) => s + c.methods.length, 0)}
               </span>
             </button>
@@ -154,132 +192,174 @@ export function FormulaReference({ onSubmitQuery, onNavigateToChat }: FormulaRef
         </div>
       )}
 
-      <div className="formula-search">
+      <div className='formula-search'>
         <input
-          type="text"
-          placeholder="Szukaj metody, wzoru lub funkcji SymPy..."
+          type='text'
+          placeholder='Szukaj metody, wzoru lub funkcji SymPy...'
           value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      <div className="formula-body">
-        {loading && <p className="formula-status">Ładowanie...</p>}
-        {error && <p className="formula-status formula-error">{error}</p>}
+      <div className='formula-body'>
+        {loading && <p className='formula-status'>Ładowanie...</p>}
+        {error && <p className='formula-status formula-error'>{error}</p>}
         {!loading && !error && categoriesToShow.length === 0 && (
-          <p className="formula-status">
-            {searchQuery.trim() ? `Brak wyników dla \u201e${searchQuery}\u201d` : 'Brak kategorii'}
+          <p className='formula-status'>
+            {searchQuery.trim()
+              ? `Brak wyników dla \u201e${searchQuery}\u201d`
+              : 'Brak kategorii'}
           </p>
         )}
-        {categoriesToShow.map(cat => (
-          <div key={cat.id} className="formula-category">
+        {categoriesToShow.map((cat) => (
+          <div key={cat.id} className='formula-category'>
             <button
               className={`formula-category-header ${expandedCategory === cat.id ? 'expanded' : ''}`}
-              onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+              onClick={() =>
+                setExpandedCategory(expandedCategory === cat.id ? null : cat.id)
+              }
             >
-              <span className="formula-category-name">{cat.name}</span>
-              <span className="formula-category-count">{cat.methods.length}</span>
-              <span className="formula-chevron">{expandedCategory === cat.id ? '▾' : '▸'}</span>
+              <span className='formula-category-name'>{cat.name}</span>
+              <span className='formula-category-count'>
+                {cat.methods.length}
+              </span>
+              <span className='formula-chevron'>
+                {expandedCategory === cat.id ? '▾' : '▸'}
+              </span>
             </button>
             {expandedCategory === cat.id && (
-              <div className="formula-methods">
-                {(cat.type === 'formulas' || cat.methods.some(m => m.latex)) ? (
-                  /* CKE formula cards: show LaTeX directly, no expand needed */
-                  cat.methods.map(formula => (
-                    <div key={formula.id} className="formula-card">
-                      <div className="formula-card-top">
-                        <div className="formula-card-name">{formula.name}</div>
-                        <button
-                          className="formula-card-link"
-                          onClick={() => {
-                            onSubmitQuery(`Daj mi zadanie z: ${formula.name}`);
-                            onNavigateToChat();
-                          }}
-                          title="Rozwiąż zadanie wymagające tego wzoru"
-                        >
-                          Rozwiąż zadanie →
-                        </button>
-                      </div>
-                      {formula.latex && (
-                        <div
-                          className="formula-card-latex"
-                          dangerouslySetInnerHTML={{
-                            __html: (() => {
-                              try {
-                                return katex.renderToString(formula.latex, { displayMode: true, throwOnError: false, strict: false });
-                              } catch {
-                                return formula.latex;
-                              }
-                            })()
-                          }}
-                        />
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  /* Method cards: expandable with SymPy details */
-                  cat.methods.map(method => (
-                    <div key={method.id} className="formula-method">
-                      <button
-                        className={`formula-method-header ${expandedMethod === method.id ? 'expanded' : ''}`}
-                        onClick={() => setExpandedMethod(expandedMethod === method.id ? null : method.id)}
-                      >
-                        <span className="formula-method-name">{method.name}</span>
-                      </button>
-                      {expandedMethod === method.id && (
-                        <div className="formula-method-detail">
-                          <p
-                            className="formula-description"
-                            dangerouslySetInnerHTML={{ __html: renderMathText(method.description) }}
-                          />
-                          {method.when_to_use && (
-                            <div className="formula-meta-row">
-                              <strong>Kiedy stosować:</strong>{' '}
-                              <span dangerouslySetInnerHTML={{ __html: renderMathText(method.when_to_use) }} />
-                            </div>
-                          )}
-                          {method.sympy_functions.length > 0 && (
-                            <div className="formula-meta-row">
-                              <strong>Funkcje SymPy:</strong>
-                              <span className="formula-tags">
-                                {method.sympy_functions.map(fn => (
-                                  <code key={fn} className="formula-tag">{fn}</code>
-                                ))}
-                              </span>
-                            </div>
-                          )}
-                          {method.worked_example && (
-                            <div className="formula-example">
-                              <strong>Przykład:</strong>{' '}
-                              <span dangerouslySetInnerHTML={{ __html: renderMathText(method.worked_example.problem) }} />
-                              {method.worked_example.common_pitfalls.length > 0 && (
-                                <div className="formula-pitfalls">
-                                  <strong>Pułapki:</strong>
-                                  {method.worked_example.common_pitfalls.map((p, i) => (
-                                    <span
-                                      key={i}
-                                      className="formula-pitfall"
-                                      dangerouslySetInnerHTML={{ __html: renderMathText(p) }}
-                                    />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
+              <div className='formula-methods'>
+                {cat.type === 'formulas' || cat.methods.some((m) => m.latex)
+                  ? /* CKE formula cards: show LaTeX directly, no expand needed */
+                    cat.methods.map((formula) => (
+                      <div key={formula.id} className='formula-card'>
+                        <div className='formula-card-top'>
+                          <div className='formula-card-name'>
+                            {formula.name}
+                          </div>
                           <button
-                            className="formula-try-btn"
+                            className='formula-card-link'
                             onClick={() => {
-                              onSubmitQuery(method.worked_example?.problem || `Daj mi zadanie z: ${method.name}`);
+                              onSubmitQuery(
+                                `Daj mi zadanie z: ${formula.name}`,
+                              );
                               onNavigateToChat();
                             }}
+                            title='Rozwiąż zadanie wymagające tego wzoru'
                           >
-                            Wypróbuj to zadanie
+                            Rozwiąż zadanie →
                           </button>
                         </div>
-                      )}
-                    </div>
-                  ))
-                )}
+                        {formula.latex && (
+                          <div
+                            className='formula-card-latex'
+                            dangerouslySetInnerHTML={{
+                              __html: (() => {
+                                try {
+                                  return katex.renderToString(formula.latex, {
+                                    displayMode: true,
+                                    throwOnError: false,
+                                    strict: false,
+                                  });
+                                } catch {
+                                  return formula.latex;
+                                }
+                              })(),
+                            }}
+                          />
+                        )}
+                      </div>
+                    ))
+                  : /* Method cards: expandable with SymPy details */
+                    cat.methods.map((method) => (
+                      <div key={method.id} className='formula-method'>
+                        <button
+                          className={`formula-method-header ${expandedMethod === method.id ? 'expanded' : ''}`}
+                          onClick={() =>
+                            setExpandedMethod(
+                              expandedMethod === method.id ? null : method.id,
+                            )
+                          }
+                        >
+                          <span className='formula-method-name'>
+                            {method.name}
+                          </span>
+                        </button>
+                        {expandedMethod === method.id && (
+                          <div className='formula-method-detail'>
+                            <p
+                              className='formula-description'
+                              dangerouslySetInnerHTML={{
+                                __html: renderMathText(method.description),
+                              }}
+                            />
+                            {method.when_to_use && (
+                              <div className='formula-meta-row'>
+                                <strong>Kiedy stosować:</strong>{' '}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: renderMathText(method.when_to_use),
+                                  }}
+                                />
+                              </div>
+                            )}
+                            {method.sympy_functions.length > 0 && (
+                              <div className='formula-meta-row'>
+                                <strong>Funkcje SymPy:</strong>
+                                <span className='formula-tags'>
+                                  {method.sympy_functions.map((fn) => (
+                                    <code key={fn} className='formula-tag'>
+                                      {fn}
+                                    </code>
+                                  ))}
+                                </span>
+                              </div>
+                            )}
+                            {method.worked_example && (
+                              <div className='formula-example'>
+                                <strong>Przykład:</strong>{' '}
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: renderMathText(
+                                      method.worked_example.problem,
+                                    ),
+                                  }}
+                                />
+                                {method.worked_example.common_pitfalls.length >
+                                  0 && (
+                                  <div className='formula-pitfalls'>
+                                    <strong>Pułapki:</strong>
+                                    {method.worked_example.common_pitfalls.map(
+                                      (p, i) => (
+                                        <span
+                                          key={i}
+                                          className='formula-pitfall'
+                                          dangerouslySetInnerHTML={{
+                                            __html: renderMathText(p),
+                                          }}
+                                        />
+                                      ),
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            <button
+                              className='formula-try-btn'
+                              onClick={() => {
+                                onSubmitQuery(
+                                  method.worked_example?.problem ||
+                                    `Daj mi zadanie z: ${method.name}`,
+                                );
+                                onNavigateToChat();
+                              }}
+                            >
+                              Wypróbuj to zadanie
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
               </div>
             )}
           </div>

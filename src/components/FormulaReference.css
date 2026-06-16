@@ -40,7 +40,9 @@
   border-bottom: none;
   border-radius: var(--radius-xs) var(--radius-xs) 0 0;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .formula-level-tab:hover {
