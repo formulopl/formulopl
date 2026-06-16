@@ -7,7 +7,7 @@ import { FormulaReference } from './components/FormulaReference';
 import { QuizMode } from './components/QuizMode';
 import ImageUpload from './components/ImageUpload';
 import WelcomeLanding from './components/WelcomeLanding';
-import { MathLogoIcon, AddIcon, CalendarIcon, HistoryIcon, CollapseIcon } from './components/DesignIcons';
+import { FormuloLogoIcon, AddIcon, CalendarIcon, HistoryIcon, CollapseIcon } from './components/DesignIcons';
 import { GamificationWidget } from './components/GamificationWidget';
 import StudyPlan from './components/StudyPlan';
 import MathKeyboard from './components/MathKeyboard';
@@ -737,7 +737,7 @@ function App() {
     <div className="app-shell">
       <aside className={`app-rail ${railCollapsed ? 'collapsed' : ''}`} aria-label="Pasek narzędzi">
         <button className="rail-logo" onClick={() => navigateTo('chat')} title="Formulo — strona główna" aria-label="Strona główna">
-          <MathLogoIcon size={26} />
+          <FormuloLogoIcon size={28} />
         </button>
         <div className="rail-actions">
           <button className="rail-btn" onClick={handleClearHistory} title="Nowy czat" aria-label="Nowy czat">

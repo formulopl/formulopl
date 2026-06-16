@@ -30,6 +30,22 @@ export const MathLogoIcon = ({ size = 24, className }: IconProps) => (
   </svg>
 );
 
+/* Formulo brand logo — gradient rounded square with ∫ and italic f.
+   Mirrors the header <h1> mark; uses its own gradient id to avoid collisions. */
+export const FormuloLogoIcon = ({ size = 28, className }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" className={className} aria-hidden="true" style={{ flexShrink: 0 }}>
+    <defs>
+      <linearGradient id="formuloLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#667eea" />
+        <stop offset="100%" stopColor="#764ba2" />
+      </linearGradient>
+    </defs>
+    <rect width="32" height="32" rx="7" fill="url(#formuloLogoGrad)" />
+    <text x="5" y="27" fontFamily="Georgia, serif" fontSize="28" fontWeight="bold" fill="white" opacity="0.95">∫</text>
+    <text x="17" y="22" fontFamily="Georgia, serif" fontSize="14" fontStyle="italic" fontWeight="bold" fill="rgba(255,255,255,0.7)">f</text>
+  </svg>
+);
+
 /* Add (+) inside rounded square — accent gradient fill */
 export const AddIcon = ({ size = 24, className }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">

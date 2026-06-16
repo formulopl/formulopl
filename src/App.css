@@ -1469,22 +1469,17 @@ body::after {
     padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Mobile: the rail is hidden; logo + theme + new-chat return to the header. */
+  /* Mobile: keep the left rail visible — it owns the logo, nav and theme, so the
+     header's duplicate logo + theme stay hidden (see .app-header h1 below). The
+     fixed bottom tab bar remains. */
   .app-shell {
-    display: block;
-  }
-
-  .app-rail,
-  .rail-reopen {
-    display: none;
-  }
-
-  .app-header .theme-toggle {
     display: flex;
   }
 
-  .app-header .clear-button {
-    display: inline-flex;
+  /* Rail ends above the fixed bottom tab bar so its footer (theme + collapse)
+     stays tappable instead of being covered by the bar. */
+  .app-rail {
+    height: calc(100dvh - 62px - env(safe-area-inset-bottom, 0px));
   }
 
   /* ---- HEADER: single compact horizontal row ---- */
@@ -1499,15 +1494,9 @@ body::after {
     min-height: 0;
   }
 
+  /* Logo lives in the rail on mobile too, so keep it hidden in the header. */
   .app-header h1 {
-    display: flex;
-    font-size: 17px;
-    padding-right: 0;
-    gap: 8px;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none;
   }
 
   .app-header h1 svg {
@@ -1660,6 +1649,12 @@ body::after {
     border-radius: 0;
   }
 
+  /* Na mobile przykłady lądują NAD inputem (order), z odrobiną oddechu. */
+  .examples-below-input {
+    order: 1;
+    padding: 12px 16px;
+  }
+
   /* ---- MESSAGES ---- */
   .message {
     max-width: 92%;
@@ -1682,6 +1677,7 @@ body::after {
 
   /* ---- INPUT AREA: compact, with rounded send button ---- */
   .input-container {
+    order: 2; /* input pod przykładami na mobile */
     padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px));
     gap: 6px;
     align-items: flex-end;
