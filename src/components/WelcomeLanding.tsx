@@ -105,6 +105,8 @@ const WelcomeLanding: React.FC = () => {
         </div>
       </section>
 
+      {/* Sekcje poniżej do przeniesienia w inne miejsce z uwagi na przytłaczającą ilość informacji na starcie */}
+
       {/* Learning Principle: jasna deklaracja edukacyjnego charakteru
           aplikacji, widoczna od razu po hero. Adresuje obawy o "ściąganie"
           i ułatwia ręczną weryfikację w Google Ads / Search. */}
