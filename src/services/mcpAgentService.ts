@@ -45,11 +45,7 @@ export class MCPAgentOrchestrator {
   private provider: LLMProvider;
   private availableTools: MCPTool[] = [];
 
-  constructor(
-    provider: LLMProvider,
-    apiKey?: string,
-    mlxConfig?: MLXConfig
-  ) {
+  constructor(provider: LLMProvider, apiKey?: string, mlxConfig?: MLXConfig) {
     this.provider = provider;
 
     if (provider === 'claude') {
@@ -73,7 +69,10 @@ export class MCPAgentOrchestrator {
       this.mcpClient = new MCPClient(proxyUrl);
       await this.mcpClient.connect();
       this.availableTools = await this.mcpClient.listTools();
-      logDebug('🔌 Connected to MCP server. Available tools:', this.availableTools.map(t => t.name));
+      logDebug(
+        '🔌 Connected to MCP server. Available tools:',
+        this.availableTools.map((t) => t.name),
+      );
     } catch (error) {
       logError('Failed to connect to MCP server:', error);
       throw error;
@@ -102,7 +101,7 @@ export class MCPAgentOrchestrator {
    * Convert MCP tools to Anthropic tool format
    */
   private convertToolsForClaude(): any[] {
-    return this.availableTools.map(tool => ({
+    return this.availableTools.map((tool) => ({
       name: tool.name,
       description: tool.description,
       input_schema: tool.inputSchema,
@@ -117,7 +116,8 @@ export class MCPAgentOrchestrator {
       return '';
     }
 
-    let description = '\n\nDostępne narzędzia matematyczne (format wywołania JSON):\n\n';
+    let description =
+      '\n\nDostępne narzędzia matematyczne (format wywołania JSON):\n\n';
 
     for (const tool of this.availableTools) {
       description += `**${tool.name}**\n`;
@@ -127,7 +127,8 @@ export class MCPAgentOrchestrator {
     }
 
     description += '\nAby użyć narzędzia, odpowiedz w formacie JSON:\n';
-    description += '```json\n{\n  "tool_call": {\n    "name": "nazwa_narzędzia",\n    "arguments": { "param": "wartość" }\n  }\n}\n```\n';
+    description +=
+      '```json\n{\n  "tool_call": {\n    "name": "nazwa_narzędzia",\n    "arguments": { "param": "wartość" }\n  }\n}\n```\n';
     description += '\nJeśli nie potrzebujesz narzędzia, odpowiedz normalnie.';
 
     return description;
@@ -139,7 +140,9 @@ export class MCPAgentOrchestrator {
   private extractToolCallFromMLX(content: string): ToolCall | null {
     try {
       // Try to find <tool_call> tag format (Claude-style or Bielik Python dict)
-      const toolCallMatch = content.match(/<tool_call>\s*({[\s\S]*?})\s*<\/tool_call>/);
+      const toolCallMatch = content.match(
+        /<tool_call>\s*({[\s\S]*?})\s*<\/tool_call>/,
+      );
       if (toolCallMatch) {
         let jsonStr = toolCallMatch[1];
 
@@ -175,7 +178,9 @@ export class MCPAgentOrchestrator {
       }
 
       // Try to find TOOL_CALL: format (used by Bielik)
-      const toolCallTextMatch = content.match(/TOOL_CALL:\s*\n?\s*({[\s\S]*?})\s*(?:\n|$)/);
+      const toolCallTextMatch = content.match(
+        /TOOL_CALL:\s*\n?\s*({[\s\S]*?})\s*(?:\n|$)/,
+      );
       if (toolCallTextMatch) {
         const parsed = JSON.parse(toolCallTextMatch[1]);
         if (parsed.name) {
@@ -223,11 +228,14 @@ export class MCPAgentOrchestrator {
     for (const toolCall of toolCalls) {
       try {
         logDebug(`🔧 Executing tool: ${toolCall.name}`, toolCall.arguments);
-        const result = await this.mcpClient.callTool(toolCall.name, toolCall.arguments);
+        const result = await this.mcpClient.callTool(
+          toolCall.name,
+          toolCall.arguments,
+        );
 
         const textContent = result.content
-          .filter(c => c.type === 'text')
-          .map(c => c.text)
+          .filter((c) => c.type === 'text')
+          .map((c) => c.text)
           .join('\n');
 
         results.push({
@@ -257,7 +265,7 @@ export class MCPAgentOrchestrator {
    */
   async processMessage(
     userMessage: string,
-    onMessageCallback?: (message: Message) => void
+    onMessageCallback?: (message: Message) => void,
   ): Promise<Message[]> {
     logDebug('🎯 Processing user message:', userMessage);
 
@@ -287,13 +295,15 @@ export class MCPAgentOrchestrator {
       if (this.provider === 'claude' && this.client) {
         // Claude with native tool support
         const messages = this.conversationHistory
-          .filter(msg => msg.role !== 'system')
-          .map(msg => {
+          .filter((msg) => msg.role !== 'system')
+          .map((msg) => {
             // If content is already an array (e.g., tool results), use it as is
             // Otherwise, convert string content to the format Claude expects
             const content = Array.isArray(msg.content)
               ? msg.content
-              : (typeof msg.content === 'string' ? msg.content : String(msg.content));
+              : typeof msg.content === 'string'
+                ? msg.content
+                : String(msg.content);
 
             return {
               role: msg.role as 'user' | 'assistant',
@@ -350,7 +360,10 @@ Odpowiadaj po polsku. NIGDY nie pokazuj ręcznych obliczeń - TYLKO wyniki z nar
           requestParams.tools = claudeTools;
         }
 
-        logDebug('🤖 Calling Claude API with tools:', claudeTools.map(t => t.name));
+        logDebug(
+          '🤖 Calling Claude API with tools:',
+          claudeTools.map((t) => t.name),
+        );
         logVerbose('📤 Request messages:', JSON.stringify(messages, null, 2));
 
         let response;
@@ -420,7 +433,9 @@ Odpowiadaj po polsku. NIGDY nie pokazuj ręcznych obliczeń - TYLKO wyniki z nar
           // Update both displayMsg and the message in newMessages with tool results
           displayMsg.toolResults = toolResults;
           // Find and update the message in newMessages array
-          const msgInNewMessages = newMessages.find(m => m.id === displayMsg.id);
+          const msgInNewMessages = newMessages.find(
+            (m) => m.id === displayMsg.id,
+          );
           if (msgInNewMessages) {
             msgInNewMessages.toolResults = toolResults;
           }
@@ -432,7 +447,7 @@ Odpowiadaj po polsku. NIGDY nie pokazuj ręcznych obliczeń - TYLKO wyniki z nar
 
           // Add tool results as a user message for Claude
           // Claude API expects content to be an array of tool_result objects
-          const toolResultsContent = toolResults.map(tr => ({
+          const toolResultsContent = toolResults.map((tr) => ({
             type: 'tool_result' as const,
             tool_use_id: tr.toolCallId,
             content: tr.result,
@@ -455,7 +470,6 @@ Odpowiadaj po polsku. NIGDY nie pokazuj ręcznych obliczeń - TYLKO wyniki z nar
         if (response.stop_reason === 'end_turn') {
           break;
         }
-
       } else if (this.provider === 'mlx' && this.mlxAgent) {
         // MLX with prompt-based tool calling
         const systemPrompt = `🚨 KRYTYCZNA ZASADA: MUSISZ używać narzędzi do KAŻDEGO obliczenia matematycznego! 🚨
@@ -493,17 +507,18 @@ Odpowiadaj po polsku. NIGDY nie pokazuj ręcznych obliczeń - TYLKO wyniki z nar
 ${this.generateToolDescriptionsForMLX()}`;
 
         const messages = this.conversationHistory
-          .filter(msg => msg.role === 'user' || msg.role === 'assistant')
-          .map(msg => {
+          .filter((msg) => msg.role === 'user' || msg.role === 'assistant')
+          .map((msg) => {
             // For MLX, we need to convert content to string
             let contentStr: string;
             if (Array.isArray(msg.content)) {
               // Extract text from content blocks (for tool results, etc.)
               contentStr = msg.content
-                .map(block => {
+                .map((block) => {
                   if (typeof block === 'object' && block !== null) {
                     if (block.type === 'text') return block.text || '';
-                    if (block.type === 'tool_result') return `Tool result: ${block.content}`;
+                    if (block.type === 'tool_result')
+                      return `Tool result: ${block.content}`;
                     return '';
                   }
                   return String(block);
@@ -511,7 +526,10 @@ ${this.generateToolDescriptionsForMLX()}`;
                 .filter(Boolean)
                 .join('\n');
             } else {
-              contentStr = typeof msg.content === 'string' ? msg.content : String(msg.content);
+              contentStr =
+                typeof msg.content === 'string'
+                  ? msg.content
+                  : String(msg.content);
             }
 
             return {
@@ -524,7 +542,9 @@ ${this.generateToolDescriptionsForMLX()}`;
         assistantContent = await this.mlxAgent.execute(systemPrompt, messages);
 
         // Remove <think> blocks from response (Bielik shows reasoning)
-        assistantContent = assistantContent.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+        assistantContent = assistantContent
+          .replace(/<think>[\s\S]*?<\/think>/g, '')
+          .trim();
 
         // Check if response contains a tool call
         const toolCall = this.extractToolCallFromMLX(assistantContent);
@@ -548,7 +568,9 @@ ${this.generateToolDescriptionsForMLX()}`;
 
           // Update assistant message with tool results (like Claude does)
           assistantMsg.toolResults = toolResults;
-          const msgInNewMessages = newMessages.find(m => m.id === assistantMsg.id);
+          const msgInNewMessages = newMessages.find(
+            (m) => m.id === assistantMsg.id,
+          );
           if (msgInNewMessages) {
             msgInNewMessages.toolResults = toolResults;
           }

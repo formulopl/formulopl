@@ -21,7 +21,7 @@
 }
 
 /* Dark theme */
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg-start: #2c2140;
   --bg-mid: #291e3b;
   --bg-end: #221934;
@@ -55,7 +55,7 @@
 }
 
 /* Light theme */
-[data-theme="light"] {
+[data-theme='light'] {
   --bg-start: #f0eef5;
   --bg-mid: #e8e4f0;
   --bg-end: #f2eff8;
@@ -89,11 +89,23 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bg-start) 0%,
+    var(--bg-mid) 50%,
+    var(--bg-end) 100%
+  );
   color: var(--text-primary);
 }
 
@@ -128,13 +140,23 @@ body::after {
 }
 
 @keyframes floatOrb1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(80px, 60px); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(80px, 60px);
+  }
 }
 
 @keyframes floatOrb2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-60px, -80px); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-60px, -80px);
+  }
 }
 
 /* Cross-browser SVG icons */
@@ -199,7 +221,9 @@ body::after {
   background: var(--glass-bg-light);
   color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 0.3s, background 0.3s;
+  transition:
+    border-color 0.3s,
+    background 0.3s;
   font-family: inherit;
 }
 
@@ -235,7 +259,9 @@ body::after {
   border-radius: var(--radius-sm);
   font-size: 14px;
   margin-bottom: 18px;
-  transition: border-color 0.3s, background 0.3s;
+  transition:
+    border-color 0.3s,
+    background 0.3s;
   background: var(--glass-bg-light);
   color: var(--text-primary);
   font-family: inherit;
@@ -261,7 +287,10 @@ body::after {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    opacity 0.2s;
   letter-spacing: 0.3px;
   font-family: inherit;
 }
@@ -301,7 +330,7 @@ body::after {
 }
 
 .info-box li:before {
-  content: "✓";
+  content: '✓';
   position: absolute;
   left: 0;
   color: var(--primary);
@@ -408,7 +437,9 @@ body::after {
   -webkit-backdrop-filter: blur(var(--blur));
   z-index: 30;
   overflow: hidden;
-  transition: width 0.25s ease, padding 0.25s ease;
+  transition:
+    width 0.25s ease,
+    padding 0.25s ease;
 }
 
 .app-rail.collapsed {
@@ -428,7 +459,9 @@ body::after {
   cursor: pointer;
   flex-shrink: 0;
   border-radius: 12px;
-  transition: background 0.15s, transform 0.15s;
+  transition:
+    background 0.15s,
+    transform 0.15s;
 }
 
 .rail-logo:hover {
@@ -461,7 +494,10 @@ body::after {
   background: rgba(255, 255, 255, 0.06);
   color: #f3f4f8;
   cursor: pointer;
-  transition: background 0.15s, transform 0.15s, opacity 0.2s;
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    opacity 0.2s;
 }
 
 .rail-btn:hover:not(:disabled) {
@@ -501,7 +537,9 @@ body::after {
   color: var(--text-muted);
   cursor: pointer;
   border-radius: 8px;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .rail-collapse:hover {
@@ -646,7 +684,9 @@ body::after {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -724,7 +764,10 @@ body::after {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s,
+    background 0.2s;
   white-space: nowrap;
   font-family: inherit;
 }
@@ -764,7 +807,9 @@ body::after {
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
   white-space: nowrap;
   font-family: inherit;
 }
@@ -885,7 +930,10 @@ body::after {
   border: 1px solid var(--glass-border);
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s;
   white-space: nowrap;
 }
 
@@ -1002,7 +1050,10 @@ body::after {
   background: rgba(102, 126, 234, 0.08);
   color: var(--primary);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s;
   text-transform: none;
   letter-spacing: 0;
   white-space: nowrap;
@@ -1074,7 +1125,10 @@ body::after {
   border-radius: 999px;
   padding: 8px 20px;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .share-btn:hover:not(:disabled) {
@@ -1130,8 +1184,12 @@ body::after {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* ===== INPUT AREA ===== */
@@ -1182,13 +1240,19 @@ body::after {
   border-radius: 12px;
   color: var(--text-primary);
   box-shadow: 0 8px 36px rgba(0, 0, 0, 0.12);
-  transition: background 0.15s, transform 0.15s;
+  transition:
+    background 0.15s,
+    transform 0.15s;
 }
 
 .input-container .image-upload-btn:hover,
 .input-container .math-keyboard-toggle:hover,
 .input-container .math-keyboard-toggle.active {
-  background: linear-gradient(168deg, rgba(102, 126, 234, 0.15) 0%, rgba(174, 94, 245, 0.15) 100%);
+  background: linear-gradient(
+    168deg,
+    rgba(102, 126, 234, 0.15) 0%,
+    rgba(174, 94, 245, 0.15) 100%
+  );
   transform: translateY(-1px);
 }
 
@@ -1200,7 +1264,9 @@ body::after {
   font-size: 14px;
   font-family: inherit;
   resize: none;
-  transition: border-color 0.3s, background 0.2s;
+  transition:
+    border-color 0.3s,
+    background 0.2s;
   min-height: 48px;
   max-height: 300px;
   overflow-y: auto;
@@ -1240,7 +1306,10 @@ body::after {
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s,
+    opacity 0.2s;
   white-space: nowrap;
   font-family: inherit;
   letter-spacing: 0.3px;
@@ -1439,7 +1508,9 @@ body::after {
   border-radius: var(--radius-sm);
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition:
+    background 0.2s,
+    transform 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1591,7 +1662,10 @@ body::after {
     color: var(--text-muted);
     line-height: 1.1;
     background: transparent;
-    transition: color 0.15s, background 0.15s, transform 0.1s;
+    transition:
+      color 0.15s,
+      background 0.15s,
+      transform 0.1s;
   }
 
   .page-tab .tab-icon {

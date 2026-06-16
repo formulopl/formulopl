@@ -46,12 +46,29 @@ const TOPIC_PATTERNS: TopicPattern[] = [
   {
     topic: 'trygonometria',
     label: 'Trygonometria',
-    patterns: [/sin/i, /cos/i, /tan/i, /tg\b/i, /ctg/i, /trygonometr/i, /\\sin/i, /\\cos/i, /\\tan/i],
+    patterns: [
+      /sin/i,
+      /cos/i,
+      /tan/i,
+      /tg\b/i,
+      /ctg/i,
+      /trygonometr/i,
+      /\\sin/i,
+      /\\cos/i,
+      /\\tan/i,
+    ],
   },
   {
     topic: 'pochodne',
     label: 'Pochodne i ekstrema',
-    patterns: [/pochodn/i, /różniczk/i, /ekstr/i, /monotoniczn/i, /styczna/i, /f'\s*\(/i],
+    patterns: [
+      /pochodn/i,
+      /różniczk/i,
+      /ekstr/i,
+      /monotoniczn/i,
+      /styczna/i,
+      /f'\s*\(/i,
+    ],
   },
   {
     topic: 'calki',
@@ -61,22 +78,57 @@ const TOPIC_PATTERNS: TopicPattern[] = [
   {
     topic: 'stereometria',
     label: 'Stereometria',
-    patterns: [/ostrosłup/i, /graniastosłup/i, /walec/i, /stożek/i, /kula/i, /sfer/i, /objętość/i, /bryły/i, /prostopadłościan/i],
+    patterns: [
+      /ostrosłup/i,
+      /graniastosłup/i,
+      /walec/i,
+      /stożek/i,
+      /kula/i,
+      /sfer/i,
+      /objętość/i,
+      /bryły/i,
+      /prostopadłościan/i,
+    ],
   },
   {
     topic: 'ciagi',
     label: 'Ciągi',
-    patterns: [/ciąg/i, /arytmetyczn/i, /geometryczn/i, /\\{a_n\\}/i, /a_n/i, /szereg/i],
+    patterns: [
+      /ciąg/i,
+      /arytmetyczn/i,
+      /geometryczn/i,
+      /\\{a_n\\}/i,
+      /a_n/i,
+      /szereg/i,
+    ],
   },
   {
     topic: 'prawdopodobienstwo',
     label: 'Prawdopodobieństwo i kombinatoryka',
-    patterns: [/prawdopodobie/i, /losow/i, /kostk/i, /kombinacj/i, /permutacj/i, /wariacj/i, /\\bP\s*\(/i, /dwumian/i],
+    patterns: [
+      /prawdopodobie/i,
+      /losow/i,
+      /kostk/i,
+      /kombinacj/i,
+      /permutacj/i,
+      /wariacj/i,
+      /\\bP\s*\(/i,
+      /dwumian/i,
+    ],
   },
   {
     topic: 'funkcja_kwadratowa',
     label: 'Funkcja kwadratowa',
-    patterns: [/kwadratow/i, /parabol/i, /wierzchołek/i, /x\^2/i, /x²/i, /delta/i, /dyskryminant/i, /\\Delta/i],
+    patterns: [
+      /kwadratow/i,
+      /parabol/i,
+      /wierzchołek/i,
+      /x\^2/i,
+      /x²/i,
+      /delta/i,
+      /dyskryminant/i,
+      /\\Delta/i,
+    ],
   },
   {
     topic: 'wielomiany',
@@ -86,17 +138,44 @@ const TOPIC_PATTERNS: TopicPattern[] = [
   {
     topic: 'geometria_plaska',
     label: 'Geometria',
-    patterns: [/trójkąt/i, /prostokąt/i, /okrąg/i, /koło/i, /pole/i, /obwód/i, /kąt/i, /równoległo/i, /romb/i, /trapez/i, /pitagoras/i, /twierdzenie/i, /symetr/i],
+    patterns: [
+      /trójkąt/i,
+      /prostokąt/i,
+      /okrąg/i,
+      /koło/i,
+      /pole/i,
+      /obwód/i,
+      /kąt/i,
+      /równoległo/i,
+      /romb/i,
+      /trapez/i,
+      /pitagoras/i,
+      /twierdzenie/i,
+      /symetr/i,
+    ],
   },
   {
     topic: 'statystyka',
     label: 'Statystyka',
-    patterns: [/średni/i, /median/i, /odchylen/i, /wariancj/i, /histogram/i, /diagram/i],
+    patterns: [
+      /średni/i,
+      /median/i,
+      /odchylen/i,
+      /wariancj/i,
+      /histogram/i,
+      /diagram/i,
+    ],
   },
   {
     topic: 'potegi_pierwiastki',
     label: 'Potęgi i pierwiastki',
-    patterns: [/potęg/i, /pierwiastk/i, /\\sqrt/i, /√/i, /\\frac\{1\}\{.*\}\)\^/i],
+    patterns: [
+      /potęg/i,
+      /pierwiastk/i,
+      /\\sqrt/i,
+      /√/i,
+      /\\frac\{1\}\{.*\}\)\^/i,
+    ],
   },
   {
     topic: 'uklady_rownan',
@@ -199,7 +278,7 @@ const TOPIC_TO_API: Partial<Record<MathTopic, string>> = {
  */
 export async function getPracticeSuggestions(
   conversationText: string,
-  count: number = 3
+  count: number = 3,
 ): Promise<{ topic: MathTopic; problems: PracticeProblem[] }> {
   const topic = detectTopic(conversationText);
   const apiTopic = TOPIC_TO_API[topic] || '';
@@ -224,7 +303,10 @@ export async function getPracticeSuggestions(
             answer: p.answer,
             options: p.options,
             year: p.metadata?.year || 0,
-            level: p.metadata?.level === 2 ? 'rozszerzona' as const : 'podstawowa' as const,
+            level:
+              p.metadata?.level === 2
+                ? ('rozszerzona' as const)
+                : ('podstawowa' as const),
             taskNumber: p.metadata?.task_number || 0,
           })),
         };
@@ -270,7 +352,8 @@ const FALLBACK_PROBLEMS: PracticeProblem[] = [
     taskNumber: 0,
   },
   {
-    question: 'Ile wynosi suma 20 pierwszych wyrazów ciągu arytmetycznego, którego pierwszy wyraz to 3 a różnica to 2?',
+    question:
+      'Ile wynosi suma 20 pierwszych wyrazów ciągu arytmetycznego, którego pierwszy wyraz to 3 a różnica to 2?',
     answer: '440',
     year: 0,
     level: 'podstawowa',

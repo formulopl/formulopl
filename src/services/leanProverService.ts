@@ -21,8 +21,8 @@ export interface LeanProverResult {
 }
 
 export class LeanProverService {
-  private workDir: string;
-  private leanCliPath: string;
+  private readonly workDir: string;
+  private readonly leanCliPath: string;
 
   constructor(leanCliPath: string = 'lean') {
     this.leanCliPath = leanCliPath;
@@ -59,7 +59,10 @@ export class LeanProverService {
   private generateLeanTheorem(problem: string, proof?: string): string {
     // Basic template for Lean theorem
     const theoremTemplate = `-- Auto-generated Lean theorem
--- Problem: ${problem.split('\n').map(line => `-- ${line}`).join('\n')}
+-- Problem: ${problem
+      .split('\n')
+      .map((line) => `-- ${line}`)
+      .join('\n')}
 
 import Mathlib.Tactic
 
@@ -68,7 +71,14 @@ theorem auto_generated_theorem : True := by
   -- Problem statement would be formalized here
   -- ${problem}
 
-  ${proof ? `-- Proof steps:\n${proof.split('\n').map(line => `  -- ${line}`).join('\n')}` : '-- No proof provided'}
+  ${
+    proof
+      ? `-- Proof steps:\n${proof
+          .split('\n')
+          .map((line) => `  -- ${line}`)
+          .join('\n')}`
+      : '-- No proof provided'
+  }
 
   -- Trivial proof for now (needs manual formalization)
   trivial
@@ -80,7 +90,10 @@ theorem auto_generated_theorem : True := by
   /**
    * Verify a Lean theorem file
    */
-  async verifyTheorem(theoremContent: string, filename: string = 'theorem.lean'): Promise<LeanProverResult> {
+  async verifyTheorem(
+    theoremContent: string,
+    filename: string = 'theorem.lean',
+  ): Promise<LeanProverResult> {
     try {
       // Ensure work directory exists
       await mkdir(this.workDir, { recursive: true });
@@ -93,7 +106,10 @@ theorem auto_generated_theorem : True := by
       const result = await this.runLeanCommand(['--stdin'], theoremContent);
 
       // Parse output
-      const verificationDetails = this.parseVerificationOutput(result.output, result.error);
+      const verificationDetails = this.parseVerificationOutput(
+        result.output,
+        result.error,
+      );
 
       return {
         success: result.success,
@@ -115,7 +131,7 @@ theorem auto_generated_theorem : True := by
    */
   async proveFromProblem(
     problem: string,
-    proof?: string
+    proof?: string,
   ): Promise<LeanProverResult> {
     const theoremContent = this.generateLeanTheorem(problem, proof);
     return this.verifyTheorem(theoremContent, `problem_${Date.now()}.lean`);
@@ -124,7 +140,10 @@ theorem auto_generated_theorem : True := by
   /**
    * Run Lean command
    */
-  private async runLeanCommand(args: string[], stdin?: string): Promise<{ success: boolean; output: string; error?: string }> {
+  private async runLeanCommand(
+    args: string[],
+    stdin?: string,
+  ): Promise<{ success: boolean; output: string; error?: string }> {
     return new Promise((resolve) => {
       let stdout = '';
       let stderr = '';
@@ -178,7 +197,10 @@ theorem auto_generated_theorem : True := by
   /**
    * Parse Lean verification output
    */
-  private parseVerificationOutput(output: string, error?: string): {
+  private parseVerificationOutput(
+    output: string,
+    error?: string,
+  ): {
     verified: boolean;
     errors?: string[];
     warnings?: string[];
@@ -203,7 +225,10 @@ theorem auto_generated_theorem : True := by
       }
 
       // Check for successful verification
-      if (line.includes('No errors found') || line.includes('All goals completed')) {
+      if (
+        line.includes('No errors found') ||
+        line.includes('All goals completed')
+      ) {
         verified = true;
       }
     }

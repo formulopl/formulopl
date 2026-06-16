@@ -129,7 +129,7 @@
   border-color: var(--primary);
 }
 
-.topic-radio-item input[type="radio"] {
+.topic-radio-item input[type='radio'] {
   accent-color: var(--primary);
   width: 16px;
   height: 16px;
@@ -242,7 +242,8 @@
 }
 
 @keyframes incorrectPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {
@@ -535,7 +536,11 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.2) 0%,
+    rgba(99, 102, 241, 0.1) 100%
+  );
   border: 3px solid var(--primary);
   display: flex;
   flex-direction: column;

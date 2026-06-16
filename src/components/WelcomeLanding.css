@@ -34,7 +34,11 @@
   padding: 8px 24px;
   border-radius: 69px;
   border: 1px solid var(--primary);
-  background: linear-gradient(173deg, rgba(102, 126, 234, 0.1) 0%, rgba(174, 94, 245, 0.1) 100%);
+  background: linear-gradient(
+    173deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(174, 94, 245, 0.1) 100%
+  );
   color: var(--text-primary);
   font-family: 'Source Code Pro', 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -85,13 +89,19 @@
   align-items: center;
   gap: 10px;
   padding: 10px 24px;
-  background: linear-gradient(168deg, rgba(102, 126, 234, 0.1) 0%, rgba(174, 94, 245, 0.1) 100%);
+  background: linear-gradient(
+    168deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(174, 94, 245, 0.1) 100%
+  );
   border: 1px solid var(--primary);
   border-radius: 12px;
   font-size: 12px;
   font-weight: 700;
   color: var(--text-primary);
-  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out;
 }
 
 .feature-pill:hover {
@@ -315,7 +325,10 @@
   font-size: 12px;
   color: var(--text-primary);
   cursor: pointer;
-  transition: background 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
+  transition:
+    background 150ms ease-out,
+    transform 150ms ease-out,
+    box-shadow 150ms ease-out;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   white-space: nowrap;
@@ -324,7 +337,11 @@
 }
 
 .example-chip:hover {
-  background: linear-gradient(168deg, rgba(102, 126, 234, 0.12) 0%, rgba(174, 94, 245, 0.12) 100%);
+  background: linear-gradient(
+    168deg,
+    rgba(102, 126, 234, 0.12) 0%,
+    rgba(174, 94, 245, 0.12) 100%
+  );
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
@@ -514,7 +531,6 @@
     padding: 10px 12px;
     font-size: 12px;
   }
-
 }
 
 @media (max-width: 480px) {

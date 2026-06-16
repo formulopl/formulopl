@@ -9,9 +9,14 @@ export interface StudyTopic {
   id: string;
   name: string;
   description: string;
-  category: 'algebra' | 'analiza' | 'geometria' | 'rachunek_prawdopodobienstwa' | 'inne';
+  category:
+    | 'algebra'
+    | 'analiza'
+    | 'geometria'
+    | 'rachunek_prawdopodobienstwa'
+    | 'inne';
   level: 'podstawowa' | 'rozszerzona';
-  estimatedMinutes: number;  // estimated time to study
+  estimatedMinutes: number; // estimated time to study
   prerequisiteIds: string[]; // topics that should be completed first
 }
 
@@ -19,16 +24,16 @@ export interface TopicProgress {
   topicId: string;
   status: 'locked' | 'available' | 'in_progress' | 'completed';
   tasksCompleted: number;
-  tasksTotal: number;       // typically 5
+  tasksTotal: number; // typically 5
   quizScore: number | null; // percentage 0-100
   lastPracticed: string | null; // ISO date
 }
 
 export interface StudyPlan {
   level: 'podstawowa' | 'rozszerzona';
-  examDate: string;           // ISO date
+  examDate: string; // ISO date
   createdAt: string;
-  topicOrder: string[];       // ordered topic IDs
+  topicOrder: string[]; // ordered topic IDs
   progress: Record<string, TopicProgress>;
   dailyGoalMinutes: number;
 }
@@ -282,7 +287,8 @@ function getDefaultExamDate(): string {
   let year = now.getFullYear();
 
   // If we're past May, next exam is next year
-  if (now.getMonth() > 4) { // May is month 4 (0-indexed)
+  if (now.getMonth() > 4) {
+    // May is month 4 (0-indexed)
     year += 1;
   }
 
@@ -296,7 +302,7 @@ function getDefaultExamDate(): string {
 export function createStudyPlan(
   level: 'podstawowa' | 'rozszerzona',
   examDate: string = getDefaultExamDate(),
-  dailyGoalMinutes: number = 30
+  dailyGoalMinutes: number = 30,
 ): StudyPlan {
   const topics = getTopicsByLevel(level);
   const topicOrder = topics.map((t) => t.id);
@@ -384,7 +390,7 @@ export function deleteStudyPlan(): void {
  */
 export function updateTopicProgress(
   topicId: string,
-  update: Partial<TopicProgress>
+  update: Partial<TopicProgress>,
 ): StudyPlan {
   const plan = loadStudyPlan();
   if (!plan) {
@@ -461,7 +467,7 @@ export function getOverallProgress(plan: StudyPlan): number {
   if (totalTopics === 0) return 0;
 
   const completedTopics = plan.topicOrder.filter(
-    (topicId) => plan.progress[topicId]?.status === 'completed'
+    (topicId) => plan.progress[topicId]?.status === 'completed',
   ).length;
 
   return Math.round((completedTopics / totalTopics) * 100);
@@ -471,14 +477,14 @@ export function getOverallProgress(plan: StudyPlan): number {
  * Get suggested daily study schedule
  */
 export function getStudySchedule(
-  plan: StudyPlan
+  plan: StudyPlan,
 ): { date: string; topicIds: string[] }[] {
   const schedule: { date: string; topicIds: string[] }[] = [];
   const daysUntilExam = getDaysUntilExam(plan);
 
   // Get topics that still need to be completed
   const remainingTopics = plan.topicOrder.filter(
-    (topicId) => plan.progress[topicId]?.status !== 'completed'
+    (topicId) => plan.progress[topicId]?.status !== 'completed',
   );
 
   if (remainingTopics.length === 0 || daysUntilExam <= 0) {
@@ -486,18 +492,29 @@ export function getStudySchedule(
   }
 
   // Distribute remaining topics evenly across remaining days
-  const topicsPerDay = Math.max(1, Math.ceil(remainingTopics.length / daysUntilExam));
+  const topicsPerDay = Math.max(
+    1,
+    Math.ceil(remainingTopics.length / daysUntilExam),
+  );
 
   let topicIndex = 0;
   const today = new Date();
 
-  for (let day = 0; day < daysUntilExam && topicIndex < remainingTopics.length; day++) {
+  for (
+    let day = 0;
+    day < daysUntilExam && topicIndex < remainingTopics.length;
+    day++
+  ) {
     const scheduleDate = new Date(today);
     scheduleDate.setDate(scheduleDate.getDate() + day);
     const dateStr = scheduleDate.toISOString().split('T')[0];
 
     const dayTopics: string[] = [];
-    for (let i = 0; i < topicsPerDay && topicIndex < remainingTopics.length; i++) {
+    for (
+      let i = 0;
+      i < topicsPerDay && topicIndex < remainingTopics.length;
+      i++
+    ) {
       dayTopics.push(remainingTopics[topicIndex]);
       topicIndex += 1;
     }
@@ -514,7 +531,12 @@ export function getStudySchedule(
  * Get category from topic ID
  */
 export function getCategoryLabel(
-  category: 'algebra' | 'analiza' | 'geometria' | 'rachunek_prawdopodobienstwa' | 'inne'
+  category:
+    | 'algebra'
+    | 'analiza'
+    | 'geometria'
+    | 'rachunek_prawdopodobienstwa'
+    | 'inne',
 ): string {
   const labels: Record<string, string> = {
     algebra: 'Algebra',
@@ -531,11 +553,13 @@ export function getCategoryLabel(
  */
 export function getCategoryProgress(
   plan: StudyPlan,
-  category: string
+  category: string,
 ): { completed: number; total: number } {
-  const topics = getTopicsByLevel(plan.level).filter((t) => t.category === category);
+  const topics = getTopicsByLevel(plan.level).filter(
+    (t) => t.category === category,
+  );
   const completed = topics.filter(
-    (t) => plan.progress[t.id]?.status === 'completed'
+    (t) => plan.progress[t.id]?.status === 'completed',
   ).length;
 
   return {

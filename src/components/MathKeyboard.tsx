@@ -96,7 +96,10 @@ const SYMBOL_GROUPS: SymbolGroup[] = [
   },
 ];
 
-const MathKeyboard: React.FC<MathKeyboardProps> = ({ onInsert, textareaRef }) => {
+const MathKeyboard: React.FC<MathKeyboardProps> = ({
+  onInsert,
+  textareaRef,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeGroup, setActiveGroup] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -104,10 +107,7 @@ const MathKeyboard: React.FC<MathKeyboardProps> = ({ onInsert, textareaRef }) =>
   // Zamknij panel po kliknięciu poza nim
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(e.target as Node)
-      ) {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -128,34 +128,43 @@ const MathKeyboard: React.FC<MathKeyboardProps> = ({ onInsert, textareaRef }) =>
   };
 
   return (
-    <div className="math-keyboard-wrapper" ref={panelRef}>
+    <div className='math-keyboard-wrapper' ref={panelRef}>
       <button
-        type="button"
+        type='button'
         className={`math-keyboard-toggle ${isOpen ? 'active' : ''}`}
         onClick={toggleOpen}
-        title="Klawiatura matematyczna"
-        aria-label="Otwórz klawiaturę matematyczną"
+        title='Klawiatura matematyczna'
+        aria-label='Otwórz klawiaturę matematyczną'
         aria-expanded={isOpen}
       >
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="4" y="3" width="16" height="18" rx="2" />
-          <line x1="7" y1="7" x2="17" y2="7" />
-          <line x1="8" y1="12" x2="8.01" y2="12" />
-          <line x1="12" y1="12" x2="12.01" y2="12" />
-          <line x1="16" y1="12" x2="16.01" y2="12" />
-          <line x1="8" y1="16" x2="8.01" y2="16" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-          <line x1="16" y1="16" x2="16.01" y2="16" />
+        <svg
+          viewBox='0 0 24 24'
+          width='20'
+          height='20'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='1.8'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+        >
+          <rect x='4' y='3' width='16' height='18' rx='2' />
+          <line x1='7' y1='7' x2='17' y2='7' />
+          <line x1='8' y1='12' x2='8.01' y2='12' />
+          <line x1='12' y1='12' x2='12.01' y2='12' />
+          <line x1='16' y1='12' x2='16.01' y2='12' />
+          <line x1='8' y1='16' x2='8.01' y2='16' />
+          <line x1='12' y1='16' x2='12.01' y2='16' />
+          <line x1='16' y1='16' x2='16.01' y2='16' />
         </svg>
       </button>
 
       {isOpen && (
-        <div className="math-keyboard-panel">
-          <div className="math-keyboard-tabs">
+        <div className='math-keyboard-panel'>
+          <div className='math-keyboard-tabs'>
             {SYMBOL_GROUPS.map((group, idx) => (
               <button
                 key={group.label}
-                type="button"
+                type='button'
                 className={`math-keyboard-tab ${activeGroup === idx ? 'active' : ''}`}
                 onClick={() => setActiveGroup(idx)}
               >
@@ -163,12 +172,12 @@ const MathKeyboard: React.FC<MathKeyboardProps> = ({ onInsert, textareaRef }) =>
               </button>
             ))}
           </div>
-          <div className="math-keyboard-symbols">
+          <div className='math-keyboard-symbols'>
             {SYMBOL_GROUPS[activeGroup].symbols.map((sym) => (
               <button
                 key={sym.title}
-                type="button"
-                className="math-symbol-btn"
+                type='button'
+                className='math-symbol-btn'
                 onClick={() => handleSymbolClick(sym.insert)}
                 title={sym.title}
                 aria-label={sym.title}

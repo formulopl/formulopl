@@ -66,37 +66,41 @@ const WelcomeLanding: React.FC = () => {
   // ];
 
   return (
-    <div className="welcome-landing">
+    <div className='welcome-landing'>
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="hero-badge">
+      <section className='hero-section'>
+        <div className='hero-content'>
+          <div className='hero-badge'>
             <AiIcon size={16} />
-            <span>Powered by <strong>Bielik v3 11B</strong></span>
+            <span>
+              Powered by <strong>Bielik v3 11B</strong>
+            </span>
           </div>
-          <h1 className="hero-headline">
+          <h1 className='hero-headline'>
             Naucz się matematyki z korepetytorem AI
           </h1>
-          <p className="hero-subheadline">
-            Wpisz lub wklej dowolne zadanie. Korepetytor AI po polsku wytłumaczy ci metodę krok po kroku i pokaże, jak myśleć matematycznie. <strong>Bez logowania, bez opłat.</strong>
+          <p className='hero-subheadline'>
+            Wpisz lub wklej dowolne zadanie. Korepetytor AI po polsku wytłumaczy
+            ci metodę krok po kroku i pokaże, jak myśleć matematycznie.{' '}
+            <strong>Bez logowania, bez opłat.</strong>
           </p>
 
           {/* Feature Pills */}
-          <div className="feature-pills">
-            <div className="feature-pill">
-              <div className="pill-icon">
+          <div className='feature-pills'>
+            <div className='feature-pill'>
+              <div className='pill-icon'>
                 <CubeIcon />
               </div>
               <span>Matura podstawowa i rozszerzona</span>
             </div>
-            <div className="feature-pill">
-              <div className="pill-icon">
+            <div className='feature-pill'>
+              <div className='pill-icon'>
                 <NoAccountsIcon />
               </div>
               <span>Bez logowania</span>
             </div>
-            <div className="feature-pill">
-              <div className="pill-icon">
+            <div className='feature-pill'>
+              <div className='pill-icon'>
                 <StepIcon />
               </div>
               <span>Krok po kroku</span>
@@ -189,7 +193,6 @@ const WelcomeLanding: React.FC = () => {
           ))}
         </div>
       </section> */}
-
     </div>
   );
 };

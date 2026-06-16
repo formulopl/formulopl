@@ -19,13 +19,23 @@ export interface LLMResponse {
 /** Stub class. No client-side LLM calls are made. */
 export class LLMAgent {
   constructor(_config: LLMConfig) {}
-  async isAvailable(): Promise<boolean> { return false; }
-  async getModels(): Promise<string[]> { return []; }
-  async execute(_system: string, _messages: Array<{role: string; content: string}>, _opts?: any): Promise<string> {
+  async isAvailable(): Promise<boolean> {
+    return false;
+  }
+  async getModels(): Promise<string[]> {
+    return [];
+  }
+  async execute(
+    _system: string,
+    _messages: Array<{ role: string; content: string }>,
+    _opts?: any,
+  ): Promise<string> {
     throw new Error('Client-side LLM calls are disabled. Use /api/solve.');
   }
   changeModel(_model: string): void {}
-  get provider(): LLMProviderType { return 'remote'; }
+  get provider(): LLMProviderType {
+    return 'remote';
+  }
 }
 
 export { LLMAgent as MLXAgent };

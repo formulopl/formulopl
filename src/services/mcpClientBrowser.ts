@@ -58,7 +58,10 @@ export class MCPClientBrowser {
       this.tools = toolsData.tools || [];
       this.connected = true;
 
-      logDebug('MCP client connected. Available tools:', this.tools.map(t => t.name));
+      logDebug(
+        'MCP client connected. Available tools:',
+        this.tools.map((t) => t.name),
+      );
     } catch (error) {
       logError('Failed to connect to MCP:', error);
       throw error;
@@ -85,7 +88,10 @@ export class MCPClientBrowser {
   /**
    * Call a tool via MCP proxy
    */
-  async callTool(name: string, args: Record<string, any>): Promise<MCPToolResult> {
+  async callTool(
+    name: string,
+    args: Record<string, any>,
+  ): Promise<MCPToolResult> {
     if (!this.connected) {
       throw new Error('MCP client not connected');
     }

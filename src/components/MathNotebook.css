@@ -167,7 +167,9 @@
   border-radius: 14px;
   background: var(--glass-bg);
   overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .notebook-card:hover {
@@ -197,7 +199,11 @@
 }
 
 .notebook-topic-badge {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark, #764ba2));
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-dark, #764ba2)
+  );
   color: #fff;
   border-radius: 100px;
   padding: 2px 10px;
@@ -324,7 +330,7 @@
 }
 
 [data-theme='dark'] .notebook-content {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* Sekcja notatki */
@@ -401,7 +407,9 @@
   border: 1.5px solid var(--glass-border);
   background: var(--glass-bg);
   color: var(--text-primary);
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .notebook-action-btn:hover {

@@ -18,18 +18,18 @@ interface PracticeSuggestionsProps {
 function RefreshIcon() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width='16'
+      height='16'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <polyline points="23 4 23 10 17 10" />
-      <polyline points="1 20 1 14 7 14" />
-      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      <polyline points='23 4 23 10 17 10' />
+      <polyline points='1 20 1 14 7 14' />
+      <path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15' />
     </svg>
   );
 }
@@ -37,17 +37,17 @@ function RefreshIcon() {
 function ArrowRightIcon() {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width='16'
+      height='16'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
+      <line x1='5' y1='12' x2='19' y2='12' />
+      <polyline points='12 5 19 12 12 19' />
     </svg>
   );
 }
@@ -55,17 +55,17 @@ function ArrowRightIcon() {
 function BookIcon() {
   return (
     <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width='18'
+      height='18'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      <path d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20' />
+      <path d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z' />
     </svg>
   );
 }
@@ -129,25 +129,25 @@ const PracticeSuggestions: React.FC<PracticeSuggestionsProps> = ({
   };
 
   return (
-    <div className="practice-suggestions">
-      <div className="practice-header">
-        <div className="practice-title">
+    <div className='practice-suggestions'>
+      <div className='practice-header'>
+        <div className='practice-title'>
           <BookIcon />
           <span>Ćwicz dalej: {getTopicLabel(topic)}</span>
         </div>
-        <div className="practice-actions">
+        <div className='practice-actions'>
           <button
-            className="practice-refresh-btn"
+            className='practice-refresh-btn'
             onClick={handleRefresh}
             disabled={loading}
-            title="Załaduj inne zadania"
+            title='Załaduj inne zadania'
           >
             <RefreshIcon />
           </button>
           <button
-            className="practice-dismiss-btn"
+            className='practice-dismiss-btn'
             onClick={() => setDismissed(true)}
-            title="Zamknij"
+            title='Zamknij'
           >
             ×
           </button>
@@ -155,37 +155,39 @@ const PracticeSuggestions: React.FC<PracticeSuggestionsProps> = ({
       </div>
 
       {loading ? (
-        <div className="practice-loading">
-          <div className="practice-loading-dot" />
-          <div className="practice-loading-dot" />
-          <div className="practice-loading-dot" />
+        <div className='practice-loading'>
+          <div className='practice-loading-dot' />
+          <div className='practice-loading-dot' />
+          <div className='practice-loading-dot' />
         </div>
       ) : (
-        <div className="practice-cards">
+        <div className='practice-cards'>
           {problems.map((problem, idx) => (
             <button
               key={idx}
-              className="practice-card"
+              className='practice-card'
               onClick={() => handleSolve(problem)}
             >
-              <div className="practice-card-content">
-                <div className="practice-card-meta">
+              <div className='practice-card-content'>
+                <div className='practice-card-meta'>
                   {problem.year > 0 && (
-                    <span className="practice-badge">
-                      CKE {problem.year}
-                    </span>
+                    <span className='practice-badge'>CKE {problem.year}</span>
                   )}
                   {problem.year > 0 && (
-                    <span className="practice-badge practice-badge-level">
-                      {problem.level === 'rozszerzona' ? 'Rozszerzona' : 'Podstawowa'}
+                    <span className='practice-badge practice-badge-level'>
+                      {problem.level === 'rozszerzona'
+                        ? 'Rozszerzona'
+                        : 'Podstawowa'}
                     </span>
                   )}
                 </div>
-                <div className="practice-card-question">
-                  <MessageContent content={truncateQuestion(problem.question)} />
+                <div className='practice-card-question'>
+                  <MessageContent
+                    content={truncateQuestion(problem.question)}
+                  />
                 </div>
               </div>
-              <div className="practice-card-arrow">
+              <div className='practice-card-arrow'>
                 <ArrowRightIcon />
               </div>
             </button>

@@ -44,7 +44,12 @@ function normalizeChallenge(data: any): DailyChallengeData | null {
     options = data.options;
   } else if (typeof data.options === 'object') {
     // API returns { a: "...", b: "...", c: "...", d: "..." }
-    const labelMap: Record<string, 'A' | 'B' | 'C' | 'D'> = { a: 'A', b: 'B', c: 'C', d: 'D' };
+    const labelMap: Record<string, 'A' | 'B' | 'C' | 'D'> = {
+      a: 'A',
+      b: 'B',
+      c: 'C',
+      d: 'D',
+    };
     options = Object.entries(data.options)
       .filter(([key]) => labelMap[key])
       .map(([key, content]) => ({
@@ -61,7 +66,8 @@ function normalizeChallenge(data: any): DailyChallengeData | null {
 
   const year = data.year ?? data.metadata?.year ?? 0;
   const taskNumber = data.taskNumber ?? data.metadata?.task_number ?? 0;
-  const correctOption = data.correctOption ?? options.find(o => o.isCorrect)?.label ?? 'A';
+  const correctOption =
+    data.correctOption ?? options.find((o) => o.isCorrect)?.label ?? 'A';
 
   return { question: data.question, options, correctOption, year, taskNumber };
 }
@@ -95,19 +101,19 @@ function renderLatex(text: string): string {
 function CalendarIcon() {
   return (
     <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width='20'
+      height='20'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-      <line x1="16" y1="2" x2="16" y2="6"></line>
-      <line x1="8" y1="2" x2="8" y2="6"></line>
-      <line x1="3" y1="10" x2="21" y2="10"></line>
+      <rect x='3' y='4' width='18' height='18' rx='2' ry='2'></rect>
+      <line x1='16' y1='2' x2='16' y2='6'></line>
+      <line x1='8' y1='2' x2='8' y2='6'></line>
+      <line x1='3' y1='10' x2='21' y2='10'></line>
     </svg>
   );
 }
@@ -116,7 +122,9 @@ const DailyChallenge: React.FC<DailyChallengeProps> = ({ onSolveInChat }) => {
   const [challenge, setChallenge] = useState<DailyChallengeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<'A' | 'B' | 'C' | 'D' | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<
+    'A' | 'B' | 'C' | 'D' | null
+  >(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -163,10 +171,10 @@ const DailyChallenge: React.FC<DailyChallengeProps> = ({ onSolveInChat }) => {
 
   if (loading) {
     return (
-      <div className="daily-challenge-card">
-        <div className="daily-challenge-skeleton">
-          <div className="skeleton-header"></div>
-          <div className="skeleton-content"></div>
+      <div className='daily-challenge-card'>
+        <div className='daily-challenge-skeleton'>
+          <div className='skeleton-header'></div>
+          <div className='skeleton-content'></div>
         </div>
       </div>
     );
@@ -177,21 +185,21 @@ const DailyChallenge: React.FC<DailyChallengeProps> = ({ onSolveInChat }) => {
   }
 
   return (
-    <div className="daily-challenge-card">
-      <div className="daily-challenge-header">
-        <div className="header-icon">
+    <div className='daily-challenge-card'>
+      <div className='daily-challenge-header'>
+        <div className='header-icon'>
           <CalendarIcon />
         </div>
-        <h2 className="header-title">Zadanie dnia</h2>
+        <h2 className='header-title'>Zadanie dnia</h2>
       </div>
 
-      <div className="daily-challenge-content">
+      <div className='daily-challenge-content'>
         <div
-          className="question-text"
+          className='question-text'
           dangerouslySetInnerHTML={{ __html: renderLatex(challenge.question) }}
         />
 
-        <div className="options-grid">
+        <div className='options-grid'>
           {challenge.options.map((option) => {
             const isSelected = selectedAnswer === option.label;
             const showFeedback = selectedAnswer !== null;
@@ -216,10 +224,12 @@ const DailyChallenge: React.FC<DailyChallengeProps> = ({ onSolveInChat }) => {
                 onClick={() => handleOptionClick(option.label)}
                 disabled={selectedAnswer !== null}
               >
-                <span className="option-label">{option.label}</span>
+                <span className='option-label'>{option.label}</span>
                 <span
-                  className="option-content"
-                  dangerouslySetInnerHTML={{ __html: renderLatex(option.content) }}
+                  className='option-content'
+                  dangerouslySetInnerHTML={{
+                    __html: renderLatex(option.content),
+                  }}
                 />
               </button>
             );
@@ -228,18 +238,18 @@ const DailyChallenge: React.FC<DailyChallengeProps> = ({ onSolveInChat }) => {
 
         {selectedAnswer !== null && (
           <div className={`feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-            <span className="feedback-text">
+            <span className='feedback-text'>
               {isCorrect ? 'Poprawnie!' : 'Błędnie!'}
             </span>
           </div>
         )}
 
-        <div className="metadata">
+        <div className='metadata'>
           Matura podstawowa {challenge.year}, zadanie {challenge.taskNumber}
         </div>
 
         {selectedAnswer !== null && (
-          <button className="solve-button" onClick={handleSolveInChat}>
+          <button className='solve-button' onClick={handleSolveInChat}>
             Rozwiąż krok po kroku
           </button>
         )}

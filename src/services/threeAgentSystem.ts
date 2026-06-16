@@ -2,7 +2,14 @@ import { LLMAgent, LLMProviderType } from './mlxAgent';
 import { MCPClientBrowser as MCPClient, MCPTool } from './mcpClientBrowser';
 import { LeanProverServiceBrowser } from './leanProverService.browser';
 import prompts from '../../prompts.json';
-import { logInfo, logDebug, logWarn, logError, setLogLevel, LogLevel } from './logger';
+import {
+  logInfo,
+  logDebug,
+  logWarn,
+  logError,
+  setLogLevel,
+  LogLevel,
+} from './logger';
 
 // Initialize log level from config
 setLogLevel(((prompts as any).features?.log_level ?? 1) as LogLevel);
@@ -98,7 +105,10 @@ export class ThreeAgentOrchestrator {
       this.mcpClient = new MCPClient(proxyUrl);
       await this.mcpClient.connect();
       this.availableTools = await this.mcpClient.listTools();
-      logDebug('🔌 Connected to MCP server. Available tools:', this.availableTools.map(t => t.name));
+      logDebug(
+        '🔌 Connected to MCP server. Available tools:',
+        this.availableTools.map((t) => t.name),
+      );
     } catch (error) {
       logError('Failed to connect to MCP server:', error);
       throw error;
@@ -120,7 +130,9 @@ export class ThreeAgentOrchestrator {
 
     const available = await this.leanClient.isAvailable();
     if (!available) {
-      throw new Error('Lean Prover niedostępny — uruchom Lean Proxy na porcie 3002 (./start.sh)');
+      throw new Error(
+        'Lean Prover niedostępny — uruchom Lean Proxy na porcie 3002 (./start.sh)',
+      );
     }
 
     this.leanAvailable = true;
@@ -177,7 +189,9 @@ export class ThreeAgentOrchestrator {
       });
 
       if (!res.ok || !res.body) {
-        logWarn(`Server-side solve unavailable (${res.status}), falling back to client pipeline`);
+        logWarn(
+          `Server-side solve unavailable (${res.status}), falling back to client pipeline`,
+        );
         return null;
       }
 
@@ -187,13 +201,13 @@ export class ThreeAgentOrchestrator {
       let finalResult: any = null;
 
       const agentIcons: Record<string, string> = {
-        'Guardrail': '🛡️',
-        'Klasyfikator': '🔍',
+        Guardrail: '🛡️',
+        Klasyfikator: '🔍',
         'Agent Analityczny': '🧠',
         'Agent Wykonawczy': '⚡',
         'Agent Podsumowujący': '📝',
         'Generator Zadań': '📝',
-        'Kalkulator': '🧮',
+        Kalkulator: '🧮',
         'Lean Prover': '🔬',
       };
 
@@ -218,7 +232,15 @@ export class ThreeAgentOrchestrator {
                 const { step, agentName, content } = data;
 
                 // Show intermediate steps as messages
-                if ((step.endsWith('_done') || step === 'lean_verify_fail' || step === 'lean_verify_code' || step === 'lean_verify_wait') && !data.blocked && agentName !== 'Guardrail' && agentName !== 'Klasyfikator') {
+                if (
+                  (step.endsWith('_done') ||
+                    step === 'lean_verify_fail' ||
+                    step === 'lean_verify_code' ||
+                    step === 'lean_verify_wait') &&
+                  !data.blocked &&
+                  agentName !== 'Guardrail' &&
+                  agentName !== 'Klasyfikator'
+                ) {
                   const icon = agentIcons[agentName] || '📋';
                   const msg: Message = {
                     id: crypto.randomUUID(),
@@ -237,7 +259,9 @@ export class ThreeAgentOrchestrator {
                   const blockedMsg: Message = {
                     id: crypto.randomUUID(),
                     role: 'assistant',
-                    content: content || 'Mogę pomóc tylko z zadaniami z matematyki i nauk ścisłych.',
+                    content:
+                      content ||
+                      'Mogę pomóc tylko z zadaniami z matematyki i nauk ścisłych.',
                     agentName: '🛡️ Guardrail',
                     timestamp: new Date(),
                   };
@@ -274,7 +298,6 @@ export class ThreeAgentOrchestrator {
 
       logInfo('Server-side solve completed successfully');
       return newMessages;
-
     } catch (err) {
       // /api/solve not available (local dev, network error) — silent fallback
       logDebug(`Server-side solve unavailable: ${err}`);
@@ -294,21 +317,28 @@ export class ThreeAgentOrchestrator {
   async processMessage(
     userMessage: string,
     onMessageCallback?: (message: Message) => void,
-    options?: { classifierMode?: boolean; abortSignal?: AbortSignal }
+    options?: { classifierMode?: boolean; abortSignal?: AbortSignal },
   ): Promise<Message[]> {
     // Allow per-call override of classifierMode
     if (options?.classifierMode !== undefined) {
       this.classifierMode = options.classifierMode;
     }
-    logInfo(`🎯 Processing with multi-agent system (classifierMode=${this.classifierMode}):`, userMessage);
+    logInfo(
+      `🎯 Processing with multi-agent system (classifierMode=${this.classifierMode}):`,
+      userMessage,
+    );
 
     // === Parse #UNI=ON/OFF toggle ===
     const uniMatch = userMessage.match(/^#UNI\s*=\s*(ON|OFF)\b/im);
-    const universityEnabled = uniMatch ? uniMatch[1].toUpperCase() === 'ON' : ((prompts as any).features?.university_level ?? true);
+    const universityEnabled = uniMatch
+      ? uniMatch[1].toUpperCase() === 'ON'
+      : ((prompts as any).features?.university_level ?? true);
     // Strip the #UNI tag from the message so LLM doesn't see it
     if (uniMatch) {
       userMessage = userMessage.replace(/^#UNI\s*=\s*(ON|OFF)\s*/im, '').trim();
-      logDebug(`🎓 University mode: ${universityEnabled ? 'ON' : 'OFF'} (from #UNI tag)`);
+      logDebug(
+        `🎓 University mode: ${universityEnabled ? 'ON' : 'OFF'} (from #UNI tag)`,
+      );
     }
 
     // Add user message
@@ -326,7 +356,12 @@ export class ThreeAgentOrchestrator {
     // ═══════════════════════════════════════════════════════════════════
     // Server-side pipeline (guardrail + generator + arithmetic + solve)
     // ═══════════════════════════════════════════════════════════════════
-    const serverResult = await this.tryServerSolve(userMessage, newMessages, onMessageCallback, options?.abortSignal);
+    const serverResult = await this.tryServerSolve(
+      userMessage,
+      newMessages,
+      onMessageCallback,
+      options?.abortSignal,
+    );
     if (serverResult) {
       return serverResult;
     }
@@ -363,7 +398,11 @@ export class ThreeAgentOrchestrator {
   /**
    * Get current backend info
    */
-  getBackendInfo(): { prover: ProverBackend; mcpConnected: boolean; leanConnected: boolean } {
+  getBackendInfo(): {
+    prover: ProverBackend;
+    mcpConnected: boolean;
+    leanConnected: boolean;
+  } {
     return {
       prover: this.proverBackend,
       mcpConnected: this.mcpClient !== null,
