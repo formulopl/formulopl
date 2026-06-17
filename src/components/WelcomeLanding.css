@@ -446,6 +446,15 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
 }
 
+/* On short viewports, drop the badge and feature pills so the hero fits
+   without being clipped or scrolled. */
+@media (max-height: 800px) {
+  .hero-badge,
+  .feature-pills {
+    display: none;
+  }
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   .welcome-landing {

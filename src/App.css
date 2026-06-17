@@ -840,11 +840,33 @@ body::after {
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
-/* Landing (no messages yet): the hero must not scroll — it should sit within
-   the available space above the input instead of being a scroll area. */
+/* Landing (no messages yet): the hero sits centered within the available space
+   above the input, but on short viewports it can be taller than that space.
+   We let the container scroll instead of clipping, and do the centering on the
+   inner wrapper (below) so the top is never cut off. */
 .messages-container--landing {
-  overflow: hidden;
+  overflow-y: auto;
+  /* Scrollable on short screens, but keep the scrollbar hidden. */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+
+.messages-container--landing::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* The wrapper is at least the full height of the scroll area, so the hero is
+   centered when it fits. When the viewport is too short the wrapper grows past
+   100% to fit its content and scrolls from the top — so the top is never
+   clipped. More robust across browsers than `justify-content: safe center`. */
+.messages-container--landing .empty-state {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 /* Scrollable wrapper for non-chat pages (Plan, Quiz, Notebook, Stats) */
